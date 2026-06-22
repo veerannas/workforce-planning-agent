@@ -3,6 +3,7 @@ import {
   Card, CardHeader, Title, Text, Tag, FlexBox,
   AnalyticalTable, ObjectStatus, Icon, Avatar
 } from "@ui5/webcomponents-react";
+import { useAuth } from "../auth/AuthContext";
 import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/positive.js";
 import "@ui5/webcomponents-icons/dist/sys-minus.js";
@@ -21,6 +22,9 @@ interface PersonNode {
   location: string;
   department?: string;
   children?: PersonNode[];
+  _isMe?: boolean;
+  _isManager?: boolean;
+  _isGrandparent?: boolean;
 }
 
 interface DeptInsight {
@@ -71,15 +75,22 @@ function PersonCard({
 }) {
   const level = gradeLevel(node.grade);
   const initials = node.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
-  const headerBg = node.id === "CEO" ? "#1A376C" : "#3d4a5c";
+  const headerBg = node._isMe
+    ? "#0b6e4f"                         // teal-green = logged-in user
+    : node._isGrandparent
+      ? "#7a8a9a"                       // greyed = grandparent
+      : node.id === "CEO"
+        ? "#1A376C"
+        : "#3d4a5c";
+  const cardBorder = node._isMe ? "2px solid #0b6e4f" : "1px solid #dde3ed";
 
   return (
     <div style={{
       width: CARD_W,
-      border: "1px solid #dde3ed",
+      border: cardBorder,
       borderRadius: 8,
       overflow: "hidden",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.09)",
+      boxShadow: node._isMe ? "0 0 12px rgba(11,110,79,0.35)" : "0 2px 8px rgba(0,0,0,0.09)",
       background: "#fff",
       flexShrink: 0,
     }}>
@@ -289,15 +300,18 @@ function GradeLegend() {
 export function OrgDesign() {
   const [tree, setTree] = useState<PersonNode | null>(null);
   const [insights, setInsights] = useState<InsightsData | null>(null);
-  const role = localStorage.getItem("wfp_role") || "employee";
+  const { user } = useAuth();
+  const role = user?.role || "employee";
+  const employeeId = user?.employee_id || "";
   const isExec = role === "executive";
 
   useEffect(() => {
-    fetch(`${API}/api/org/tree`).then(r => r.json()).then(setTree);
+    const params = new URLSearchParams({ role, employee_id: employeeId });
+    fetch(`${API}/api/org/tree?${params}`).then(r => r.json()).then(setTree);
     if (isExec) {
       fetch(`${API}/api/org/executive-insights`).then(r => r.json()).then(setInsights);
     }
-  }, []);
+  }, [role, employeeId]);
 
   if (!tree) return <Text>Loading org structure...</Text>;
 

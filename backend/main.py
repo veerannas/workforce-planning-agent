@@ -290,83 +290,116 @@ def get_redeployment_opportunities():
 # ORG DESIGN
 # ═══════════════════════════════════════════════════════════════════════════════
 @app.get("/api/org/tree")
-def get_org_tree():
-    """Person-to-person org hierarchy. M3→M2→M1→IC, enriched with email/phone/location."""
+def get_org_tree(employee_id: str = "", role: str = "executive"):
+    """
+    Person-to-person org hierarchy built from actual manager_id relationships in employees.csv.
+    Scoped by role:
+      - executive: full tree (CEO → dept heads → all reports)
+      - manager:   3-level subtree rooted at employee_id (manager's manager → manager → direct reports)
+      - employee:  3-level subtree (employee's manager → employee → employee's direct reports)
+    """
     employees = load_employees()
+    emp_by_id: dict[str, dict] = {e["employee_id"]: e for e in employees}
 
-    def phone(emp_id: str) -> str:
+    def make_phone(emp_id: str) -> str:
         n = int(emp_id[3:])
-        return f"({555}) {100 + n // 1000:03d}-{n % 10000:04d}"
+        return f"(555) {100 + n // 1000:03d}-{n % 10000:04d}"
 
-    def email(first: str, last: str) -> str:
+    def make_email(first: str, last: str) -> str:
         return f"{first.lower()}.{last.lower()}@company.com"
 
-    def to_node(e: dict) -> dict:
+    def to_node(e: dict, children: list | None = None) -> dict:
         return {
             "id": e["employee_id"],
             "name": f"{e['first_name']} {e['last_name']}",
             "role": e["role"],
-            "grade": e["grade"],
-            "email": email(e["first_name"], e["last_name"]),
-            "phone": phone(e["employee_id"]),
+            "grade": e.get("grade", e.get("raw_grade", "")),
+            "email": make_email(e["first_name"], e["last_name"]),
+            "phone": make_phone(e["employee_id"]),
             "location": e["location"],
             "department": e["department"],
-            "children": [],
+            "children": children if children is not None else [],
         }
 
-    # Group by dept and raw_grade
-    by_dept: dict[str, dict[str, list]] = {}
+    # Build children index from manager_id
+    children_of: dict[str, list[dict]] = {}
     for e in employees:
-        d = e["department"]
-        g = e["raw_grade"]
-        by_dept.setdefault(d, {}).setdefault(g, []).append(e)
+        mgr = e.get("manager_id", "")
+        if mgr:
+            children_of.setdefault(mgr, []).append(e)
 
+    def build_subtree(emp_id: str, depth: int) -> dict:
+        """Recursively build node with children up to given depth."""
+        e = emp_by_id.get(emp_id)
+        if not e:
+            return {}
+        kids = children_of.get(emp_id, [])
+        child_nodes = [build_subtree(k["employee_id"], depth - 1) for k in kids] if depth > 0 else []
+        node = to_node(e, [c for c in child_nodes if c])
+        return node
+
+    # ── Synthetic CEO node at the top for executive view ─────────────────────
     ceo: dict = {
         "id": "CEO",
         "name": "Alex Morgan",
         "role": "Chief Executive Officer",
-        "grade": "T5-1",
+        "grade": "M3",
         "email": "alex.morgan@company.com",
         "phone": "(555) 000-0001",
         "location": "New York",
+        "department": "Executive",
         "children": [],
     }
 
-    DEPT_TITLES = {"Technology": "Chief Technology Officer", "Operations": "Chief Operations Officer", "Finance": "Chief Financial Officer"}
-    for dept in ["Technology", "Operations", "Finance"]:
-        dept_data = by_dept.get(dept, {})
-        m3s = dept_data.get("M3", [])
-        m2s = dept_data.get("M2", [])
-        m1s = dept_data.get("M1", [])
-        ics = dept_data.get("IC1", []) + dept_data.get("IC2", []) + dept_data.get("IC3", []) + dept_data.get("IC4", []) + dept_data.get("IC5", [])
-        if not m3s:
-            continue
+    if role == "executive":
+        # Full tree: find all employees whose manager_id is absent/empty (top-level per dept)
+        # then attach them under CEO
+        dept_heads: list[dict] = []
+        for e in employees:
+            mgr_id = e.get("manager_id", "")
+            # Top-level = no manager, or manager not in dataset
+            if not mgr_id or mgr_id not in emp_by_id:
+                dept_heads.append(e)
+        for head in dept_heads:
+            ceo["children"].append(build_subtree(head["employee_id"], depth=3))
+        return ceo
 
-        # Pick first M3 as C-Suite; others become direct reports under them
-        csuite = to_node(m3s[0])
-        csuite["role"] = DEPT_TITLES.get(dept, f"VP {dept}")
+    # ── Scoped views for manager and employee ────────────────────────────────
+    if not employee_id or employee_id not in emp_by_id:
+        return ceo  # fallback: return CEO tree
 
-        # Remaining M3s → L2 managers
-        l2_nodes = [to_node(e) for e in m3s[1:]] + [to_node(e) for e in m2s]
-        l3_nodes = [to_node(e) for e in m1s]
-        ic_nodes = [to_node(e) for e in ics]
+    me = emp_by_id[employee_id]
+    my_manager_id = me.get("manager_id", "")
+    my_manager = emp_by_id.get(my_manager_id)
 
-        # Distribute L3 under L2 (round-robin)
-        for i, n in enumerate(l3_nodes):
-            if l2_nodes:
-                l2_nodes[i % len(l2_nodes)]["children"].append(n)
+    # Direct reports of the logged-in user
+    my_reports = children_of.get(employee_id, [])
+    report_nodes = [build_subtree(r["employee_id"], depth=1) for r in my_reports]
 
-        # Distribute ICs under L3 (round-robin)
-        for i, n in enumerate(ic_nodes):
-            if l3_nodes:
-                l3_nodes[i % len(l3_nodes)]["children"].append(n)
+    me_node = to_node(me, report_nodes)
+    me_node["_isMe"] = True  # highlight flag for frontend
 
-        for n in l2_nodes:
-            csuite["children"].append(n)
+    if my_manager:
+        # Show manager's manager (greyed) → manager → me (+siblings for context)
+        mgr_manager_id = my_manager.get("manager_id", "")
+        mgr_manager = emp_by_id.get(mgr_manager_id)
 
-        ceo["children"].append(csuite)
+        # Siblings = other direct reports of my manager (show but collapsed)
+        siblings = [
+            to_node(s, []) for s in children_of.get(my_manager_id, [])
+            if s["employee_id"] != employee_id
+        ]
+        mgr_node = to_node(my_manager, [me_node] + siblings)
+        mgr_node["_isManager"] = True
 
-    return ceo
+        if mgr_manager:
+            top_node = to_node(mgr_manager, [mgr_node])
+            top_node["_isGrandparent"] = True
+            return top_node
+        return mgr_node
+
+    # No manager found — return just me with reports
+    return me_node
 
 
 @app.get("/api/org/executive-insights")
