@@ -129,5 +129,13 @@ If the LLM invents a skill requirement not in the taxonomy, the hallucination gu
 
 ---
 
+## Live Demo
+
+**BTP URL:** https://workforce-planning-agent.cfapps.us10-001.hana.ondemand.com/
+
+**GitHub:** https://github.com/veerannas/workforce-planning-agent
+
+---
+
 *Built for: Forward Deployed AI Engineer Coding Exercise — SAP SuccessFactors Workforce Planning Agent*
 *Time budget: 2–4 hours | Stack: Python, LangGraph, Pandas, Streamlit, Anthropic/OpenAI API*

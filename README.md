@@ -20,6 +20,9 @@ npm run dev
 See `WPA-Architecture.drawio` for full platform diagram.
 
 ## Deployment (SAP BTP Cloud Foundry)
+
+**Live URL:** https://workforce-planning-agent.cfapps.us10-001.hana.ondemand.com/
+
 ```bash
 cd backend
 cf push
