@@ -129,7 +129,7 @@ EMP01126,Susan,Jones,Operations,Procurement Specialist,M1,San Francisco,7.9,3,16
 EMP01127,Fatima,Khan,Technology,Security Engineer,IC1,San Francisco,11.0,1,69628,NLP|Azure|Terraform|AWS|Cloud Architecture|Supply Chain Management,2025-12-24,EMP01059
 EMP01128,Patricia,Thompson,Operations,Administrative Assistant,IC5,Bangalore,14.8,3,194075,SAP MM|Inventory Management|Process Optimization|Excel Advanced|Tableau|Microservices,2025-08-10,EMP01126
 EMP01129,Dorothy,Rodriguez,Finance,Accounts Payable Clerk,IC5,Berlin,12.7,3,170888,Accounts Receivable|IFRS|Cost Accounting|Accounts Payable|SAP FICO|GAAP|Terraform,2025-10-20,EMP01142
-EMP01130,Kenneth,Williams,Operations,Operations Manager,M2,Berlin,6.3,,173325,Excel Advanced|Vendor Management|Kubernetes,2025-07-16,
+EMP01130,Kenneth,Williams,Operations,Operations Manager,M2,Berlin,6.3,4,173325,Excel Advanced|Vendor Management|Kubernetes,2025-07-16,
 EMP01131,Olga,Singh,Technology,ML Engineer,IC5,London,12.3,3,197468,AWS|SAP HANA,2025-09-18,EMP01062
 EMP01132,Aisha,Lee,Finance,Controller,IC4,Berlin,10.2,4,135684,Power BI|SAP FICO|Tax Compliance|Excel Advanced|Lean Six Sigma,2025-05-17,EMP01120
 EMP01133,Ashley,Weber,Technology,Tech Lead,M2,New York,1.3,3,187127,GraphQL|SAP HANA|Deep Learning|Docker|React|AWS,2026-01-16,EMP01020
@@ -149,3 +149,4 @@ EMP01146,Yuki,Weber,Technology,Engineering Manager,M2,San Francisco,13.4,5,17910
 EMP01147,John,Kumar,Technology,QA Engineer,M1,Berlin,8.2,2,143739,Microservices|Docker|Azure,2025-10-17,EMP01096
 EMP01148,Kenneth,Garcia,Finance,Treasury Analyst,IC5,Singapore,9.9,4,176267,,2025-05-27,EMP01137
 EMP01149,Emily,Khan,Technology,ML Engineer,M1,Bangalore,3.4,5,153265,Cloud Architecture|SQL|Deep Learning|TypeScript|Python,2025-08-29,EMP01142
+EMP00001,Alex,Morgan,Executive,Chief Executive Officer,M3,New York,12.0,5,350000,Strategy|Leadership|M&A|Finance|Operations|Technology,2026-01-01,

@@ -30,10 +30,10 @@ USERS = {
     "executive": {
         "password": "exe123",
         "role": "executive",
-        "name": "Kenneth Williams",
-        "title": "VP of Operations",
-        "department": "Operations",
-        "employee_id": "EMP01130",
+        "name": "Alex Morgan",
+        "title": "Chief Executive Officer",
+        "department": "Executive",
+        "employee_id": "EMP00001",
     },
 }
 

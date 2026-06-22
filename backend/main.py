@@ -339,26 +339,28 @@ def get_org_tree(employee_id: str = "", role: str = "executive"):
         node = to_node(e, [c for c in child_nodes if c])
         return node
 
-    # ── Synthetic CEO node at the top for executive view ─────────────────────
+    # ── CEO node from real CSV row (EMP00001 = Alex Morgan) ──────────────────
+    ceo_emp = emp_by_id.get("EMP00001", {})
     ceo: dict = {
         "id": "CEO",
-        "name": "Alex Morgan",
-        "role": "Chief Executive Officer",
-        "grade": "M3",
-        "email": "alex.morgan@company.com",
+        "name": f"{ceo_emp.get('first_name', 'Alex')} {ceo_emp.get('last_name', 'Morgan')}",
+        "role": ceo_emp.get("role", "Chief Executive Officer"),
+        "grade": ceo_emp.get("grade", "M3"),
+        "email": f"{ceo_emp.get('first_name', 'alex').lower()}.{ceo_emp.get('last_name', 'morgan').lower()}@company.com",
         "phone": "(555) 000-0001",
-        "location": "New York",
-        "department": "Executive",
+        "location": ceo_emp.get("location", "New York"),
+        "department": ceo_emp.get("department", "Executive"),
         "children": [],
     }
 
     if role == "executive":
-        # Full tree: find all employees whose manager_id is absent/empty (top-level per dept)
-        # then attach them under CEO
+        # Full tree: find all top-level employees (no manager, or manager not in dataset)
+        # excluding the CEO row itself — attach under CEO
         dept_heads: list[dict] = []
         for e in employees:
+            if e["employee_id"] == "EMP00001":
+                continue  # skip CEO — he is the root
             mgr_id = e.get("manager_id", "")
-            # Top-level = no manager, or manager not in dataset
             if not mgr_id or mgr_id not in emp_by_id:
                 dept_heads.append(e)
         for head in dept_heads:
