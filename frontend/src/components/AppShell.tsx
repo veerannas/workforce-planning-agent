@@ -29,7 +29,6 @@ import { RedeploymentHub } from "./RedeploymentHub";
 import { OrgDesign } from "./OrgDesign";
 import { MyTeam } from "./MyTeam";
 import { Approvals } from "./Approvals";
-import { ScenarioComparison } from "./ScenarioComparison";
 import { WorkforceAnalytics } from "./WorkforceAnalytics";
 import { TalentHealth } from "./TalentHealth";
 import { StrategicDashboard } from "./StrategicDashboard";
@@ -52,9 +51,9 @@ const NAV_ITEMS = [
 ];
 
 const ROLE_NAV: Record<string, string[]> = {
-  employee:  ["home", "agent", "reskilling", "redeployment", "scenarios"],
-  manager:   ["home", "my-team", "agent", "hiring", "reskilling", "redeployment", "approvals", "org", "scenarios", "analytics"],
-  executive: ["home", "agent", "strategic", "talent", "org", "scenarios", "analytics", "board-report"],
+  employee:  ["home", "agent", "reskilling", "redeployment"],
+  manager:   ["home", "my-team", "agent", "hiring", "reskilling", "redeployment", "approvals", "org", "analytics"],
+  executive: ["home", "agent", "strategic", "talent", "org", "analytics", "board-report"],
 };
 
 const ROLE_BADGE: Record<string, { bg: string; color: string }> = {
@@ -85,7 +84,6 @@ export function AppShell() {
       case "redeployment": return <RedeploymentHub />;
       case "approvals": return <Approvals />;
       case "org": return <OrgDesign />;
-      case "scenarios": return <ScenarioComparison />;
       case "strategic": return <StrategicDashboard />;
       case "talent": return <TalentHealth />;
       case "board-report": return <BoardReport />;
