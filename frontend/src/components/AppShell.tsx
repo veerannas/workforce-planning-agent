@@ -52,9 +52,9 @@ const NAV_ITEMS = [
 ];
 
 const ROLE_NAV: Record<string, string[]> = {
-  employee: ["home", "agent", "reskilling", "redeployment"],
-  manager: ["home", "my-team", "agent", "hiring", "reskilling", "redeployment", "approvals", "org", "scenarios", "analytics"],
-  executive: ["home", "agent", "strategic", "talent", "org", "analytics", "board-report"],
+  employee:  ["home", "agent", "reskilling", "redeployment", "scenarios"],
+  manager:   ["home", "my-team", "agent", "hiring", "reskilling", "redeployment", "approvals", "org", "scenarios", "analytics"],
+  executive: ["home", "agent", "strategic", "talent", "org", "scenarios", "analytics", "board-report"],
 };
 
 const ROLE_BADGE: Record<string, { bg: string; color: string }> = {

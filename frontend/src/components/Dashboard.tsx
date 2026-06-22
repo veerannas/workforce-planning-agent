@@ -13,6 +13,7 @@ import {
   BusyIndicator,
   Bar,
   Icon,
+  Panel,
 } from "@ui5/webcomponents-react";
 import { AnalyticalTable } from "@ui5/webcomponents-react";
 import { useAuth } from "../auth/AuthContext";
@@ -30,6 +31,7 @@ import "@ui5/webcomponents-icons/dist/task.js";
 import "@ui5/webcomponents-icons/dist/measure.js";
 import "@ui5/webcomponents-icons/dist/approvals.js";
 import "@ui5/webcomponents-icons/dist/trend-up.js";
+import "@ui5/webcomponents-icons/dist/compare.js";
 
 const API_BASE = import.meta.env.DEV ? "http://localhost:8000" : "";
 
@@ -190,6 +192,48 @@ export function Dashboard() {
   const [loading, setLoading]         = useState(false);
   const [result, setResult]           = useState<AnalyzeResponse | null>(null);
   const [error, setError]             = useState("");
+
+  // ── Scenario Comparison state ──────────────────────────────────────────────
+  const COMPARE_PRESETS: Record<string, string[]> = {
+    employee: [
+      "Grow into ML Engineer by completing Python and cloud certifications within 12 months",
+      "Transition to AI Product Manager by building product sense and stakeholder skills over 18 months",
+      "Stay in current role and close the top 3 skill gaps identified in my last review",
+    ],
+    manager: [
+      "Double AI and ML capacity in my team while reducing manual operations by 20% over 2 years",
+      "Consolidate team structure through redeployment and selective hiring to cut costs by 15%",
+      "Maintain current headcount but reskill 40% of the team into cloud and data engineering roles",
+    ],
+    executive: [
+      "Double AI and ML capacity while reducing back-office operations by 20% over 3 years",
+      "Reduce total workforce costs by 30% through automation and strategic consolidation",
+      "Expand into cloud and data engineering across all departments, maintain current operations headcount",
+    ],
+  };
+  const comparePresets = COMPARE_PRESETS[role] ?? COMPARE_PRESETS.employee;
+  const [compareScenarios, setCompareScenarios] = useState<string[]>(comparePresets.slice(0, 2));
+  const [compareResults, setCompareResults]     = useState<any[]>([]);
+  const [compareLoading, setCompareLoading]     = useState(false);
+  const [compareError, setCompareError]         = useState("");
+
+  const runComparison = async () => {
+    setCompareLoading(true);
+    setCompareError("");
+    try {
+      const res = await fetch(`${API_BASE}/api/scenarios/compare`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(compareScenarios.filter(s => s.trim()).map(s => ({ scenario: s }))),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setCompareResults(await res.json());
+    } catch (e: any) {
+      setCompareError(e.message || "Failed to connect to backend");
+    } finally {
+      setCompareLoading(false);
+    }
+  };
 
   const selectChip = (index: number) => {
     setActiveChip(index);
@@ -557,6 +601,134 @@ export function Dashboard() {
           )}
         </>
       )}
+
+      {/* ── Scenario Comparison ──────────────────────────────────────────── */}
+      <Panel
+        headerText="Scenario Comparison"
+        header={
+          <FlexBox alignItems="Center" style={{ gap: "0.5rem" }}>
+            <Icon name="compare" />
+            <Text style={{ fontWeight: 600 }}>Scenario Comparison</Text>
+            <Tag style={{ fontSize: "0.7rem" }}>
+              {role === "employee" ? "Career Scenarios" : role === "manager" ? "Team Scenarios" : "Org-Wide Scenarios"}
+            </Tag>
+          </FlexBox>
+        }
+        collapsed
+        style={{ marginTop: "1.5rem" }}
+      >
+        <div style={{ padding: "1rem" }}>
+          <Card
+            header={
+              <CardHeader
+                titleText="Define Scenarios"
+                subtitleText="Compare up to 3 strategic scenarios side-by-side"
+              />
+            }
+            style={{ marginBottom: "1rem" }}
+          >
+            <div style={{ padding: "1rem" }}>
+              {compareScenarios.map((s, i) => (
+                <div key={i} style={{ marginBottom: "0.75rem" }}>
+                  <Text style={{ fontWeight: "bold", fontSize: "0.85rem", display: "block", marginBottom: "4px" }}>
+                    Scenario {i + 1}
+                  </Text>
+                  <TextArea
+                    value={s}
+                    onInput={(e: any) => {
+                      const ns = [...compareScenarios];
+                      ns[i] = e.target.value;
+                      setCompareScenarios(ns);
+                    }}
+                    rows={2}
+                    style={{ width: "100%" }}
+                  />
+                </div>
+              ))}
+              <FlexBox style={{ gap: "0.5rem", marginTop: "0.5rem" }}>
+                {compareScenarios.length < 3 && (
+                  <Button onClick={() => setCompareScenarios([...compareScenarios, ""])}>
+                    Add Scenario
+                  </Button>
+                )}
+                {compareScenarios.length > 1 && (
+                  <Button
+                    design="Transparent"
+                    onClick={() => setCompareScenarios(compareScenarios.slice(0, -1))}
+                  >
+                    Remove Last
+                  </Button>
+                )}
+                <Button
+                  design="Emphasized"
+                  onClick={runComparison}
+                  disabled={compareLoading || compareScenarios.every(s => !s.trim())}
+                >
+                  {compareLoading ? "Comparing…" : "Compare Scenarios"}
+                </Button>
+              </FlexBox>
+              {compareError && (
+                <MessageStrip design="Negative" style={{ marginTop: "0.75rem" }}>{compareError}</MessageStrip>
+              )}
+            </div>
+          </Card>
+
+          {compareLoading && (
+            <BusyIndicator active size="L" style={{ display: "block", margin: "1.5rem auto" }} />
+          )}
+
+          {compareResults.length > 0 && (
+            <FlexBox wrap="Wrap" style={{ gap: "1rem" }}>
+              {compareResults.map((r, i) => (
+                <Card
+                  key={i}
+                  header={
+                    <CardHeader
+                      titleText={`Scenario ${i + 1}`}
+                      subtitleText={(r.scenario || "").slice(0, 70) + ((r.scenario || "").length > 70 ? "…" : "")}
+                    />
+                  }
+                  style={{ width: "380px" }}
+                >
+                  <div style={{ padding: "1rem" }}>
+                    <FlexBox style={{ gap: "1rem", marginBottom: "0.75rem", flexWrap: "wrap" }}>
+                      <div style={{ textAlign: "center", minWidth: "80px" }}>
+                        <Title level="H4" style={{ color: "#0F62FE" }}>
+                          ${(r.total_cost || 0).toLocaleString()}
+                        </Title>
+                        <Text style={{ fontSize: "0.75rem", color: "#666" }}>Total Cost</Text>
+                      </div>
+                      <div style={{ textAlign: "center", minWidth: "80px" }}>
+                        <Title level="H4" style={{ color: "#198754" }}>
+                          {Math.round((r.confidence || 0) * 100)}%
+                        </Title>
+                        <Text style={{ fontSize: "0.75rem", color: "#666" }}>Confidence</Text>
+                      </div>
+                      <div style={{ textAlign: "center", minWidth: "80px" }}>
+                        <Title level="H4" style={{ color: "#DA1E28" }}>
+                          {r.flagged ?? 0}
+                        </Title>
+                        <Text style={{ fontSize: "0.75rem", color: "#666" }}>HR Review</Text>
+                      </div>
+                    </FlexBox>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                      {Object.entries(r.actions_breakdown || {}).map(([action, count]) => (
+                        <Tag
+                          key={action}
+                          icon={<Icon name={ACTION_ICONS[action] || "task"} />}
+                          style={{ color: ACTION_COLORS[action] || "#333" }}
+                        >
+                          {action}: {count as number}
+                        </Tag>
+                      ))}
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </FlexBox>
+          )}
+        </div>
+      </Panel>
     </div>
   );
 }
