@@ -16,22 +16,22 @@ USERS = {
     "employee": {
         "password": "emp123",
         "role": "employee",
-        "name": "Alex Johnson",
-        "department": "Technology",
+        "name": "Richard Harris",
+        "department": "Finance",
         "employee_id": "EMP01025",
     },
     "manager": {
         "password": "man123",
         "role": "manager",
-        "name": "Sarah Chen",
+        "name": "Sandra Lee",
         "department": "Technology",
         "employee_id": "EMP01050",
     },
     "executive": {
         "password": "exe123",
         "role": "executive",
-        "name": "David Patel",
-        "department": "Finance",
+        "name": "Kenneth Williams",
+        "department": "Operations",
         "employee_id": "EMP01130",
     },
 }

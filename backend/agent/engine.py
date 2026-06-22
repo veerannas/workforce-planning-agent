@@ -650,16 +650,22 @@ def run_agent(
     # ── Scope filter — applied before anything leaves this function ──
     if user_role == "employee" and employee_id:
         recommendations = [r for r in recommendations if r.employee_id == employee_id]
-        assessments = [a for a in assessments if a.employee_id == employee_id]
+        assessments     = [a for a in assessments     if a.employee_id == employee_id]
+        # Filter gaps to only those referencing this employee's role/department
+        emp_rows = [e for e in load_employees() if e["employee_id"] == employee_id]
+        emp_roles = {e["role"] for e in emp_rows}
+        gaps = [g for g in gaps if g.role in emp_roles]
     elif user_role == "manager" and employee_id:
         # Load raw employee list to resolve manager_id relationships
         all_employees = load_employees()
         team_ids = {e["employee_id"] for e in all_employees if e.get("manager_id") == employee_id}
         # Also include the manager themselves
         team_ids.add(employee_id)
+        team_roles = {e["role"] for e in all_employees if e["employee_id"] in team_ids}
         recommendations = [r for r in recommendations if r.employee_id in team_ids]
-        assessments = [a for a in assessments if a.employee_id in team_ids]
-    # executive: no filter
+        assessments     = [a for a in assessments     if a.employee_id in team_ids]
+        gaps            = [g for g in gaps            if g.role in team_roles]
+    # executive: no filter — full org
 
     # Synthesize on scoped recommendations
     summary = synthesize_plan(scenario_text, strategy, recommendations)
