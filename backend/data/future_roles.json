@@ -1,0 +1,147 @@
+[
+  {
+    "role": "ML Engineer",
+    "department": "Technology",
+    "current_headcount": 8,
+    "target_y1": 14,
+    "target_y2": 22,
+    "target_y3": 30,
+    "required_skills": [
+      "Python",
+      "Machine Learning",
+      "Deep Learning",
+      "Cloud Architecture"
+    ],
+    "priority": "critical"
+  },
+  {
+    "role": "Data Engineer",
+    "department": "Technology",
+    "current_headcount": 10,
+    "target_y1": 15,
+    "target_y2": 20,
+    "target_y3": 25,
+    "required_skills": [
+      "Python",
+      "SQL",
+      "Data Pipelines",
+      "AWS",
+      "Kubernetes"
+    ],
+    "priority": "high"
+  },
+  {
+    "role": "Platform Engineer",
+    "department": "Technology",
+    "current_headcount": 6,
+    "target_y1": 10,
+    "target_y2": 12,
+    "target_y3": 14,
+    "required_skills": [
+      "Kubernetes",
+      "Docker",
+      "Terraform",
+      "CI/CD",
+      "Cloud Architecture"
+    ],
+    "priority": "high"
+  },
+  {
+    "role": "AI Product Manager",
+    "department": "Technology",
+    "current_headcount": 0,
+    "target_y1": 3,
+    "target_y2": 5,
+    "target_y3": 8,
+    "required_skills": [
+      "Machine Learning",
+      "Product Management",
+      "Data Analysis"
+    ],
+    "priority": "critical"
+  },
+  {
+    "role": "Operations Analyst",
+    "department": "Operations",
+    "current_headcount": 15,
+    "target_y1": 12,
+    "target_y2": 10,
+    "target_y3": 8,
+    "required_skills": [
+      "Data Analysis",
+      "Excel Advanced",
+      "Process Optimization"
+    ],
+    "priority": "reduce"
+  },
+  {
+    "role": "Administrative Assistant",
+    "department": "Operations",
+    "current_headcount": 12,
+    "target_y1": 8,
+    "target_y2": 5,
+    "target_y3": 3,
+    "required_skills": [
+      "Excel Advanced",
+      "Project Management"
+    ],
+    "priority": "reduce"
+  },
+  {
+    "role": "Procurement Specialist",
+    "department": "Operations",
+    "current_headcount": 8,
+    "target_y1": 7,
+    "target_y2": 6,
+    "target_y3": 5,
+    "required_skills": [
+      "Procurement",
+      "Vendor Management",
+      "SAP MM"
+    ],
+    "priority": "reduce"
+  },
+  {
+    "role": "FP&A Analyst",
+    "department": "Finance",
+    "current_headcount": 6,
+    "target_y1": 8,
+    "target_y2": 10,
+    "target_y3": 12,
+    "required_skills": [
+      "Financial Modeling",
+      "FP&A",
+      "Power BI",
+      "SQL"
+    ],
+    "priority": "high"
+  },
+  {
+    "role": "Accounts Payable Clerk",
+    "department": "Finance",
+    "current_headcount": 10,
+    "target_y1": 7,
+    "target_y2": 5,
+    "target_y3": 3,
+    "required_skills": [
+      "Accounts Payable",
+      "SAP FICO"
+    ],
+    "priority": "reduce"
+  },
+  {
+    "role": "Data Analyst",
+    "department": "Finance",
+    "current_headcount": 3,
+    "target_y1": 6,
+    "target_y2": 8,
+    "target_y3": 10,
+    "required_skills": [
+      "SQL",
+      "Python",
+      "Power BI",
+      "Financial Modeling"
+    ],
+    "priority": "high"
+  }
+]

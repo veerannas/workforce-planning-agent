@@ -1,0 +1,26 @@
+[
+  {
+    "department": "Technology",
+    "cost_center": "CC-TECH-001",
+    "headcount_budget": 80,
+    "annual_hr_budget_usd": 12000000,
+    "vp": "Sarah Chen",
+    "vp_id": "EMP01050"
+  },
+  {
+    "department": "Operations",
+    "cost_center": "CC-OPS-002",
+    "headcount_budget": 50,
+    "annual_hr_budget_usd": 5500000,
+    "vp": "Michael Brown",
+    "vp_id": "EMP01100"
+  },
+  {
+    "department": "Finance",
+    "cost_center": "CC-FIN-003",
+    "headcount_budget": 35,
+    "annual_hr_budget_usd": 4200000,
+    "vp": "David Patel",
+    "vp_id": "EMP01130"
+  }
+]

@@ -1,0 +1,426 @@
+[
+  {
+    "skill": "AWS",
+    "category": "Cloud",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 5,
+    "reskill_cost_usd": 4780,
+    "market_scarcity": 0.54
+  },
+  {
+    "skill": "Accounts Payable",
+    "category": "General",
+    "ai_adjacency_score": 0.29,
+    "reskill_weeks": 22,
+    "reskill_cost_usd": 26554,
+    "market_scarcity": 0.63
+  },
+  {
+    "skill": "Accounts Receivable",
+    "category": "General",
+    "ai_adjacency_score": 0.24,
+    "reskill_weeks": 4,
+    "reskill_cost_usd": 3976,
+    "market_scarcity": 0.37
+  },
+  {
+    "skill": "Audit",
+    "category": "Finance",
+    "ai_adjacency_score": 0.27,
+    "reskill_weeks": 6,
+    "reskill_cost_usd": 3708,
+    "market_scarcity": 0.84
+  },
+  {
+    "skill": "Azure",
+    "category": "Cloud",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 4,
+    "reskill_cost_usd": 3424,
+    "market_scarcity": 0.5
+  },
+  {
+    "skill": "Budgeting",
+    "category": "Finance",
+    "ai_adjacency_score": 0.28,
+    "reskill_weeks": 10,
+    "reskill_cost_usd": 10330,
+    "market_scarcity": 0.61
+  },
+  {
+    "skill": "CI/CD",
+    "category": "General",
+    "ai_adjacency_score": 0.29,
+    "reskill_weeks": 18,
+    "reskill_cost_usd": 22302,
+    "market_scarcity": 0.75
+  },
+  {
+    "skill": "Cloud Architecture",
+    "category": "Cloud",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 7,
+    "reskill_cost_usd": 3976,
+    "market_scarcity": 0.5
+  },
+  {
+    "skill": "Cost Accounting",
+    "category": "Finance",
+    "ai_adjacency_score": 0.42,
+    "reskill_weeks": 7,
+    "reskill_cost_usd": 3661,
+    "market_scarcity": 0.85
+  },
+  {
+    "skill": "Data Analysis",
+    "category": "Data",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 12,
+    "reskill_cost_usd": 7332,
+    "market_scarcity": 0.74
+  },
+  {
+    "skill": "Data Pipelines",
+    "category": "Data",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 4,
+    "reskill_cost_usd": 5808,
+    "market_scarcity": 0.94
+  },
+  {
+    "skill": "Deep Learning",
+    "category": "AI/ML",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 5,
+    "reskill_cost_usd": 5140,
+    "market_scarcity": 0.41
+  },
+  {
+    "skill": "Docker",
+    "category": "Cloud",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 4,
+    "reskill_cost_usd": 3352,
+    "market_scarcity": 0.66
+  },
+  {
+    "skill": "ERP Systems",
+    "category": "General",
+    "ai_adjacency_score": 0.48,
+    "reskill_weeks": 11,
+    "reskill_cost_usd": 14476,
+    "market_scarcity": 0.56
+  },
+  {
+    "skill": "Excel Advanced",
+    "category": "General",
+    "ai_adjacency_score": 0.17,
+    "reskill_weeks": 24,
+    "reskill_cost_usd": 28152,
+    "market_scarcity": 0.58
+  },
+  {
+    "skill": "FP&A",
+    "category": "Finance",
+    "ai_adjacency_score": 0.11,
+    "reskill_weeks": 23,
+    "reskill_cost_usd": 32292,
+    "market_scarcity": 0.43
+  },
+  {
+    "skill": "Financial Modeling",
+    "category": "Finance",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 11,
+    "reskill_cost_usd": 10329,
+    "market_scarcity": 0.55
+  },
+  {
+    "skill": "GAAP",
+    "category": "Finance",
+    "ai_adjacency_score": 0.38,
+    "reskill_weeks": 10,
+    "reskill_cost_usd": 7850,
+    "market_scarcity": 0.79
+  },
+  {
+    "skill": "GraphQL",
+    "category": "Programming",
+    "ai_adjacency_score": 0.42,
+    "reskill_weeks": 6,
+    "reskill_cost_usd": 6546,
+    "market_scarcity": 0.37
+  },
+  {
+    "skill": "IFRS",
+    "category": "Finance",
+    "ai_adjacency_score": 0.45,
+    "reskill_weeks": 9,
+    "reskill_cost_usd": 7866,
+    "market_scarcity": 0.51
+  },
+  {
+    "skill": "Inventory Management",
+    "category": "General",
+    "ai_adjacency_score": 0.28,
+    "reskill_weeks": 12,
+    "reskill_cost_usd": 14232,
+    "market_scarcity": 0.86
+  },
+  {
+    "skill": "Java",
+    "category": "Programming",
+    "ai_adjacency_score": 0.31,
+    "reskill_weeks": 24,
+    "reskill_cost_usd": 19680,
+    "market_scarcity": 0.69
+  },
+  {
+    "skill": "JavaScript",
+    "category": "Programming",
+    "ai_adjacency_score": 0.34,
+    "reskill_weeks": 22,
+    "reskill_cost_usd": 13552,
+    "market_scarcity": 0.53
+  },
+  {
+    "skill": "Kubernetes",
+    "category": "Cloud",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 9,
+    "reskill_cost_usd": 10188,
+    "market_scarcity": 0.41
+  },
+  {
+    "skill": "Lean Six Sigma",
+    "category": "Business",
+    "ai_adjacency_score": 0.37,
+    "reskill_weeks": 13,
+    "reskill_cost_usd": 18720,
+    "market_scarcity": 0.7
+  },
+  {
+    "skill": "Logistics",
+    "category": "General",
+    "ai_adjacency_score": 0.13,
+    "reskill_weeks": 8,
+    "reskill_cost_usd": 6560,
+    "market_scarcity": 0.38
+  },
+  {
+    "skill": "Machine Learning",
+    "category": "AI/ML",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 6,
+    "reskill_cost_usd": 3714,
+    "market_scarcity": 0.42
+  },
+  {
+    "skill": "Microservices",
+    "category": "General",
+    "ai_adjacency_score": 0.38,
+    "reskill_weeks": 20,
+    "reskill_cost_usd": 17940,
+    "market_scarcity": 0.57
+  },
+  {
+    "skill": "NLP",
+    "category": "AI/ML",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 4,
+    "reskill_cost_usd": 4352,
+    "market_scarcity": 0.55
+  },
+  {
+    "skill": "NoSQL",
+    "category": "Data",
+    "ai_adjacency_score": 0.17,
+    "reskill_weeks": 24,
+    "reskill_cost_usd": 25200,
+    "market_scarcity": 0.75
+  },
+  {
+    "skill": "Node.js",
+    "category": "Programming",
+    "ai_adjacency_score": 0.36,
+    "reskill_weeks": 9,
+    "reskill_cost_usd": 9612,
+    "market_scarcity": 0.41
+  },
+  {
+    "skill": "Power BI",
+    "category": "Data",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 6,
+    "reskill_cost_usd": 3858,
+    "market_scarcity": 0.42
+  },
+  {
+    "skill": "Process Optimization",
+    "category": "Business",
+    "ai_adjacency_score": 0.44,
+    "reskill_weeks": 23,
+    "reskill_cost_usd": 12742,
+    "market_scarcity": 0.86
+  },
+  {
+    "skill": "Procurement",
+    "category": "General",
+    "ai_adjacency_score": 0.48,
+    "reskill_weeks": 19,
+    "reskill_cost_usd": 12141,
+    "market_scarcity": 0.43
+  },
+  {
+    "skill": "Project Management",
+    "category": "Business",
+    "ai_adjacency_score": 0.25,
+    "reskill_weeks": 21,
+    "reskill_cost_usd": 21357,
+    "market_scarcity": 0.72
+  },
+  {
+    "skill": "Python",
+    "category": "Programming",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 8,
+    "reskill_cost_usd": 9608,
+    "market_scarcity": 0.62
+  },
+  {
+    "skill": "REST APIs",
+    "category": "Programming",
+    "ai_adjacency_score": 0.38,
+    "reskill_weeks": 18,
+    "reskill_cost_usd": 18000,
+    "market_scarcity": 0.41
+  },
+  {
+    "skill": "React",
+    "category": "Programming",
+    "ai_adjacency_score": 0.33,
+    "reskill_weeks": 11,
+    "reskill_cost_usd": 8789,
+    "market_scarcity": 0.32
+  },
+  {
+    "skill": "Risk Analysis",
+    "category": "General",
+    "ai_adjacency_score": 0.19,
+    "reskill_weeks": 13,
+    "reskill_cost_usd": 8736,
+    "market_scarcity": 0.81
+  },
+  {
+    "skill": "SAP ABAP",
+    "category": "SAP",
+    "ai_adjacency_score": 0.33,
+    "reskill_weeks": 19,
+    "reskill_cost_usd": 20178,
+    "market_scarcity": 0.63
+  },
+  {
+    "skill": "SAP FICO",
+    "category": "SAP",
+    "ai_adjacency_score": 0.33,
+    "reskill_weeks": 12,
+    "reskill_cost_usd": 15516,
+    "market_scarcity": 0.65
+  },
+  {
+    "skill": "SAP Fiori",
+    "category": "SAP",
+    "ai_adjacency_score": 0.5,
+    "reskill_weeks": 21,
+    "reskill_cost_usd": 28182,
+    "market_scarcity": 0.79
+  },
+  {
+    "skill": "SAP HANA",
+    "category": "SAP",
+    "ai_adjacency_score": 0.4,
+    "reskill_weeks": 18,
+    "reskill_cost_usd": 19062,
+    "market_scarcity": 0.44
+  },
+  {
+    "skill": "SAP MM",
+    "category": "SAP",
+    "ai_adjacency_score": 0.27,
+    "reskill_weeks": 24,
+    "reskill_cost_usd": 30456,
+    "market_scarcity": 0.46
+  },
+  {
+    "skill": "SAP SD",
+    "category": "SAP",
+    "ai_adjacency_score": 0.45,
+    "reskill_weeks": 5,
+    "reskill_cost_usd": 4800,
+    "market_scarcity": 0.47
+  },
+  {
+    "skill": "SQL",
+    "category": "Data",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 3,
+    "reskill_cost_usd": 2847,
+    "market_scarcity": 0.86
+  },
+  {
+    "skill": "Supply Chain Management",
+    "category": "General",
+    "ai_adjacency_score": 0.15,
+    "reskill_weeks": 11,
+    "reskill_cost_usd": 7854,
+    "market_scarcity": 0.83
+  },
+  {
+    "skill": "Tableau",
+    "category": "Data",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 11,
+    "reskill_cost_usd": 13255,
+    "market_scarcity": 0.53
+  },
+  {
+    "skill": "Tax Compliance",
+    "category": "Finance",
+    "ai_adjacency_score": 0.38,
+    "reskill_weeks": 24,
+    "reskill_cost_usd": 22512,
+    "market_scarcity": 0.41
+  },
+  {
+    "skill": "Terraform",
+    "category": "Cloud",
+    "ai_adjacency_score": 0.8,
+    "reskill_weeks": 4,
+    "reskill_cost_usd": 5212,
+    "market_scarcity": 0.43
+  },
+  {
+    "skill": "Treasury Management",
+    "category": "Finance",
+    "ai_adjacency_score": 0.18,
+    "reskill_weeks": 5,
+    "reskill_cost_usd": 5415,
+    "market_scarcity": 0.53
+  },
+  {
+    "skill": "TypeScript",
+    "category": "Programming",
+    "ai_adjacency_score": 0.21,
+    "reskill_weeks": 21,
+    "reskill_cost_usd": 14112,
+    "market_scarcity": 0.51
+  },
+  {
+    "skill": "Vendor Management",
+    "category": "Business",
+    "ai_adjacency_score": 0.38,
+    "reskill_weeks": 13,
+    "reskill_cost_usd": 14118,
+    "market_scarcity": 0.47
+  }
+]

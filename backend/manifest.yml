@@ -1,0 +1,11 @@
+---
+applications:
+  - name: workforce-planning-agent
+    memory: 256M
+    instances: 1
+    buildpacks:
+      - python_buildpack
+    command: python -m uvicorn main:app --host 0.0.0.0 --port $PORT
+    path: .
+    env:
+      PYTHON_VERSION: 3.12.x
