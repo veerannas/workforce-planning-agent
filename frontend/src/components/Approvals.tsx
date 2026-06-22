@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { Card, CardHeader, Title, Text, FlexBox, Button, MessageStrip } from "@ui5/webcomponents-react";
+import { useAuth } from "../auth/AuthContext";
 
 const API = import.meta.env.DEV ? "http://localhost:8000" : "";
 
 export function Approvals() {
+  const { user } = useAuth();
   const [approvals, setApprovals] = useState<any[]>([]);
   const [actionMsg, setActionMsg] = useState("");
 
-  useEffect(() => { fetch(`${API}/api/approvals`).then(r => r.json()).then(setApprovals); }, []);
+  useEffect(() => {
+    const dept = user?.department ?? "Technology";
+    fetch(`${API}/api/approvals?department=${encodeURIComponent(dept)}`).then(r => r.json()).then(setApprovals);
+  }, [user]);
 
   const handleAction = async (id: string, action: string) => {
     await fetch(`${API}/api/approvals/${id}/action`, {

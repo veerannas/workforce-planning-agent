@@ -9,6 +9,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import os
 import random
+from datetime import datetime, timezone
 
 from agent.engine import (run_agent, load_employees, load_future_roles,
                           load_org_structure, load_skills_taxonomy)
@@ -157,7 +158,7 @@ def get_hiring_pipeline():
                     "days_open": random.randint(5, 60),
                     "priority": role["priority"],
                     "salary_range": f"${random.randint(80,150)}k - ${random.randint(150,220)}k",
-                    "hiring_manager": "Sarah Chen" if role["department"] == "Technology" else "David Patel",
+                    "hiring_manager": "Richard Chen" if role["department"] == "Technology" else "David Patel",
                     "required_skills": role["required_skills"],
                     "cost_to_fill_usd": random.randint(8000, 25000),
                 })
@@ -548,7 +549,7 @@ def get_board_report():
     avg_perf = round(sum(float(e.get("performance_rating") or 3.0) for e in employees) / total_hc, 2)
 
     report = {
-        "generated_at": "2026-06-21T12:00:00Z",
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "period": "Q2 2026",
         "executive_summary": (
             f"The organization maintains a workforce of {total_hc} employees across "
@@ -695,10 +696,13 @@ def get_workforce_analytics():
 # MY TEAM (Manager — own department only)
 # ═══════════════════════════════════════════════════════════════════════════════
 @app.get("/api/team/{department}")
-def get_team(department: str):
-    """Get team members for a specific department (Manager view)."""
+def get_team(department: str, manager_id: str = ""):
+    """Get team members for a manager. If manager_id provided, returns direct reports only."""
     employees = load_employees()
-    team = [e for e in employees if e["department"].lower() == department.lower()]
+    if manager_id:
+        team = [e for e in employees if e.get("manager_id", "") == manager_id]
+    else:
+        team = [e for e in employees if e["department"].lower() == department.lower()]
     return {
         "department": department,
         "headcount": len(team),
@@ -726,10 +730,10 @@ def get_team(department: str):
 # APPROVALS (Manager — pending actions)
 # ═══════════════════════════════════════════════════════════════════════════════
 @app.get("/api/approvals")
-def get_approvals():
-    """Mock pending approvals for manager."""
+def get_approvals(department: str = "Technology"):
+    """Mock pending approvals for manager — scoped to their department."""
     employees = load_employees()
-    tech_emps = [e for e in employees if e["department"] == "Technology"][:8]
+    tech_emps = [e for e in employees if e["department"] == department][:8]
 
     approvals = []
     types = ["Reskilling Nomination", "Redeployment Request", "Hiring Approval", "Budget Increase"]

@@ -13,8 +13,10 @@ export function MyTeam() {
   const [team, setTeam] = useState<any>(null);
 
   useEffect(() => {
-    if (user?.department) {
-      fetch(`${API}/api/team/${user.department}`).then(r => r.json()).then(setTeam);
+    if (user?.department && user?.employee_id) {
+      fetch(`${API}/api/team/${user.department}?manager_id=${user.employee_id}`)
+        .then(r => r.json())
+        .then(setTeam);
     }
   }, [user]);
 

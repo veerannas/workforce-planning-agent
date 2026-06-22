@@ -23,14 +23,15 @@ USERS = {
     "manager": {
         "password": "man123",
         "role": "manager",
-        "name": "Sandra Lee",
+        "name": "Richard Chen",
         "department": "Technology",
-        "employee_id": "EMP01050",
+        "employee_id": "EMP01020",
     },
     "executive": {
         "password": "exe123",
         "role": "executive",
         "name": "Kenneth Williams",
+        "title": "VP of Operations",
         "department": "Operations",
         "employee_id": "EMP01130",
     },
