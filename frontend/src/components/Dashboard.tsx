@@ -437,8 +437,80 @@ export function Dashboard() {
 
           {/* Timeline */}
           <Card header={<CardHeader titleText="Implementation Timeline" />} style={{ marginBottom: "1rem" }}>
-            <div style={{ padding: "1rem" }}>
-              <Text>{summary.timeline_summary}</Text>
+            <div style={{ padding: "1.25rem" }}>
+              {(() => {
+                const phases = [
+                  { label: "Redeploy",  timeframe: "0–6 mo",   icon: "switch-views", color: "#0070F2", bg: "#e8f3ff", key: "REDEPLOY" },
+                  { label: "Reskill",   timeframe: "6–18 mo",  icon: "education",    color: "#0f7c3b", bg: "#e8f5ec", key: "BUILD"    },
+                  { label: "Automate",  timeframe: "12–36 mo", icon: "ai",           color: "#8b5cf6", bg: "#f3efff", key: "AUTOMATE" },
+                ];
+                // Parse counts from the flat string: "Phase N (X mo): Verb Y employees/roles."
+                const counts: Record<string, number> = {};
+                const matches = summary.timeline_summary.matchAll(/:\s*(\w+)\s+(\d+)/g);
+                let i = 0;
+                for (const m of matches) {
+                  if (i < 3) { counts[phases[i].key] = parseInt(m[2], 10); i++; }
+                }
+                return (
+                  <div style={{ display: "flex", gap: "0", alignItems: "stretch" }}>
+                    {phases.map((phase, idx) => (
+                      <div key={phase.key} style={{ display: "flex", alignItems: "stretch", flex: 1 }}>
+                        {/* Phase card */}
+                        <div style={{
+                          flex: 1,
+                          background: phase.bg,
+                          borderRadius: "12px",
+                          padding: "1.25rem 1rem",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          gap: "0.5rem",
+                          border: `2px solid ${phase.color}22`,
+                          position: "relative",
+                        }}>
+                          {/* Phase number badge */}
+                          <div style={{
+                            position: "absolute", top: "-12px", left: "50%", transform: "translateX(-50%)",
+                            background: phase.color, color: "#fff", borderRadius: "50%",
+                            width: "24px", height: "24px", display: "flex", alignItems: "center",
+                            justifyContent: "center", fontSize: "12px", fontWeight: 700,
+                          }}>{idx + 1}</div>
+                          {/* Icon */}
+                          <div style={{
+                            background: phase.color, borderRadius: "50%",
+                            width: "48px", height: "48px", display: "flex",
+                            alignItems: "center", justifyContent: "center", marginTop: "0.5rem",
+                          }}>
+                            <Icon name={phase.icon} style={{ width: "24px", height: "24px", color: "#fff" }} />
+                          </div>
+                          {/* Metric */}
+                          <div style={{ fontSize: "2rem", fontWeight: 700, color: phase.color, lineHeight: 1 }}>
+                            {counts[phase.key] ?? 0}
+                          </div>
+                          {/* Label */}
+                          <div style={{ fontWeight: 600, fontSize: "0.95rem", color: "#1D2D3E" }}>{phase.label}</div>
+                          {/* Timeframe pill */}
+                          <div style={{
+                            background: phase.color, color: "#fff", borderRadius: "999px",
+                            padding: "2px 10px", fontSize: "0.75rem", fontWeight: 600,
+                          }}>{phase.timeframe}</div>
+                          {/* Sub-label */}
+                          <div style={{ fontSize: "0.75rem", color: "#666", textAlign: "center" }}>
+                            {phase.key === "REDEPLOY" ? "employees redeployed" : phase.key === "BUILD" ? "employees reskilled" : "roles automated"}
+                          </div>
+                        </div>
+                        {/* Connector arrow between phases */}
+                        {idx < 2 && (
+                          <div style={{
+                            display: "flex", alignItems: "center", padding: "0 0.5rem",
+                            color: "#aaa", fontSize: "1.5rem", flexShrink: 0,
+                          }}>›</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
           </Card>
 
