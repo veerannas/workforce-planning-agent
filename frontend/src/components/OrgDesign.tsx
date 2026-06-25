@@ -1,13 +1,22 @@
 import { useEffect, useState } from "react";
 import {
-  Card, CardHeader, Title, Text, Tag, FlexBox,
-  AnalyticalTable, ObjectStatus, Icon, Avatar
+  Card, CardHeader, Title, Text, FlexBox,
+  Icon, Avatar,
 } from "@ui5/webcomponents-react";
 import { useAuth } from "../auth/AuthContext";
 import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/positive.js";
 import "@ui5/webcomponents-icons/dist/sys-minus.js";
 import "@ui5/webcomponents-icons/dist/task.js";
+import "@ui5/webcomponents-icons/dist/org-chart.js";
+import "@ui5/webcomponents-icons/dist/employee.js";
+import "@ui5/webcomponents-icons/dist/trend-up.js";
+import "@ui5/webcomponents-icons/dist/accept.js";
+import "@ui5/webcomponents-icons/dist/status-critical.js";
+import "@ui5/webcomponents-icons/dist/education.js";
+import "@ui5/webcomponents-icons/dist/status-error.js";
+import "@ui5/webcomponents-icons/dist/status-positive.js";
+import "@ui5/webcomponents-icons/dist/group.js";
 
 const API = import.meta.env.DEV ? "http://localhost:8000" : "";
 
@@ -179,7 +188,7 @@ function VLine({ h = 16 }: { h?: number }) {
 // ── Recursive tree node ───────────────────────────────────────────────────────
 function OrgNode({ node, depth = 0 }: { node: PersonNode; depth?: number }) {
   // CEO + direct reports (depth 0, 1) start expanded; rest collapsed
-  const [open, setOpen] = useState(depth < 2);
+  const [open, setOpen] = useState(depth < 1);
   const kids = node.children ?? [];
   const hasKids = kids.length > 0;
 
@@ -235,41 +244,6 @@ function OrgNode({ node, depth = 0 }: { node: PersonNode; depth?: number }) {
   );
 }
 
-// ── Helper components (reused from original) ──────────────────────────────────
-function Sparkline({ data, color = "#275AA3" }: { data: number[]; color?: string }) {
-  const max = Math.max(...data);
-  const min = Math.min(...data);
-  const h = 28, w = 80;
-  const points = data.map((v, i) => {
-    const x = (i / (data.length - 1)) * w;
-    const y = h - ((v - min) / (max - min || 1)) * (h - 4) - 2;
-    return `${x},${y}`;
-  }).join(" ");
-  return (
-    <svg width={w} height={h} style={{ verticalAlign: "middle" }}>
-      <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" />
-    </svg>
-  );
-}
-
-function HealthBadge({ score }: { score: number }) {
-  if (score >= 75) return <ObjectStatus state="Positive" showDefaultIcon>{score}</ObjectStatus>;
-  if (score >= 50) return <ObjectStatus state="Critical" showDefaultIcon>{score}</ObjectStatus>;
-  return <ObjectStatus state="Negative" showDefaultIcon>{score}</ObjectStatus>;
-}
-
-function MetricCard({ label, value, subtitle }: { label: string; value: string | number; subtitle?: string }) {
-  return (
-    <Card style={{ width: "180px", minHeight: "90px" }}>
-      <div style={{ padding: "0.75rem", textAlign: "center" }}>
-        <Text style={{ fontSize: "0.75rem", color: "#666" }}>{label}</Text>
-        <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "#1A376C", margin: "0.25rem 0" }}>{value}</div>
-        {subtitle && <Text style={{ fontSize: "0.7rem", color: "#888" }}>{subtitle}</Text>}
-      </div>
-    </Card>
-  );
-}
-
 // ── Grade legend ──────────────────────────────────────────────────────────────
 function GradeLegend() {
   const levels = [
@@ -298,107 +272,96 @@ function GradeLegend() {
 
 // ── Main component ────────────────────────────────────────────────────────────
 export function OrgDesign() {
-  const [tree, setTree] = useState<PersonNode | null>(null);
-  const [insights, setInsights] = useState<InsightsData | null>(null);
+  const [tree, setTree]               = useState<PersonNode | null>(null);
+  const [insights, setInsights]       = useState<InsightsData | null>(null);
+  const [allEmployees, setAllEmployees] = useState<any[]>([]);
   const { user } = useAuth();
-  const role = user?.role || "employee";
+  const role       = user?.role        || "employee";
   const employeeId = user?.employee_id || "";
-  const isExec = role === "executive";
+  const dept       = user?.department  || "";
+  const isExec     = role === "executive";
 
   useEffect(() => {
     const params = new URLSearchParams({ role, employee_id: employeeId });
     fetch(`${API}/api/org/tree?${params}`).then(r => r.json()).then(setTree);
     if (isExec) {
-      fetch(`${API}/api/org/executive-insights`).then(r => r.json()).then(setInsights);
+      Promise.all([
+        fetch(`${API}/api/org/executive-insights`).then(r => r.json()),
+        fetch(`${API}/api/employees`).then(r => r.json()),
+      ]).then(([ins, emps]) => {
+        setInsights(ins); setAllEmployees(emps);
+      }).catch(() => {});
     }
-  }, [role, employeeId]);
+    if (role === "manager" && dept) {
+      fetch(`${API}/api/org/executive-insights`).then(r => r.json()).then(setInsights).catch(() => {});
+    }
+  }, [role, employeeId, dept]);
 
   if (!tree) return <Text>Loading org structure...</Text>;
 
+  // ── Build synthetic dept-grouped tree for executive ───────────────────────
+  // Maps VP info from insights (Sarah Chen, Michael Brown, David Patel)
+  const execTree: PersonNode | null = isExec && insights && allEmployees.length > 0 ? (() => {
+    const deptConfig = [
+      { department: "Technology", icon: "T" },
+      { department: "Operations", icon: "O" },
+      { department: "Finance",    icon: "F" },
+    ];
+    const vpNodes: PersonNode[] = deptConfig.map(({ department }) => {
+      const insightDept = insights.departments.find(d => d.department === department);
+      const vpName  = insightDept?.vp ?? `${department} Lead`;
+      const deptEmps = allEmployees.filter((e: any) => e.department === department);
+      // Build employee PersonNodes (leaf level — no sub-children for perf)
+      const empNodes: PersonNode[] = deptEmps.map((e: any) => ({
+        id: e.employee_id,
+        name: `${e.first_name} ${e.last_name}`,
+        role: e.role,
+        grade: e.grade ?? "",
+        email: `${e.first_name.toLowerCase()}.${e.last_name.toLowerCase()}@company.com`,
+        phone: "(555) 000-0000",
+        location: e.location ?? "",
+        department,
+        children: [],
+      }));
+      return {
+        id: `VP-${department}`,
+        name: vpName,
+        role: `VP ${department}`,
+        grade: "T5-1",
+        email: `${vpName.toLowerCase().replace(" ", ".")}@company.com`,
+        phone: "(555) 000-0000",
+        location: "",
+        department,
+        children: empNodes,
+      } as PersonNode;
+    });
+    return {
+      id: "CEO",
+      name: "Alex Morgan",
+      role: "Chief Executive Officer",
+      grade: "T5-2",
+      email: "alex.morgan@company.com",
+      phone: "(555) 000-0001",
+      location: "New York",
+      department: "Executive",
+      children: vpNodes,
+    } as PersonNode;
+  })() : null;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <Title level="H3">Organizational Design</Title>
+      <Title level="H3">Org Structure</Title>
 
-      {/* Executive KPI banner */}
-      {isExec && insights && (
-        <FlexBox wrap="Wrap" style={{ gap: "0.75rem" }}>
-          <MetricCard label="Total Headcount" value={insights.totals.headcount} />
-          <MetricCard label="Total Budget" value={`$${(insights.totals.budget / 1_000_000).toFixed(1)}M`} />
-          <MetricCard label="Avg Health Score" value={insights.totals.avg_health} subtitle="/ 100" />
-          <MetricCard label="Open Positions" value={insights.totals.total_vacancies} />
-          <MetricCard label="Avg Attrition" value={`${(insights.totals.avg_attrition * 100).toFixed(1)}%`} />
-        </FlexBox>
-      )}
-
-      {/* Executive: department health table */}
-      {isExec && insights && (
-        <Card header={<CardHeader titleText="Department Health & Metrics" subtitleText="Span of control, attrition, vacancies, cost efficiency" />}>
-          <AnalyticalTable
-            columns={[
-              { Header: "Department", accessor: "department", width: 140 },
-              { Header: "VP", accessor: "vp", width: 130 },
-              { Header: "HC", accessor: "headcount", width: 55, hAlign: "End" },
-              { Header: "Health", accessor: "health_score", width: 75, Cell: ({ value }: any) => <HealthBadge score={value} /> },
-              { Header: "Span", accessor: "span_of_control", width: 60, hAlign: "End" },
-              { Header: "Cost/Head", accessor: "cost_per_head", width: 95, Cell: ({ value }: any) => `$${(value / 1000).toFixed(0)}K` },
-              { Header: "Attrition", accessor: "attrition_rate", width: 80, Cell: ({ value }: any) => (
-                <span style={{ color: value > 0.12 ? "#b71c1c" : "#2e7d32" }}>{(value * 100).toFixed(1)}%</span>
-              )},
-              { Header: "Vacancies", accessor: "open_positions", width: 80, hAlign: "End" },
-              { Header: "Critical Unfilled", accessor: "critical_roles_unfilled", width: 110, Cell: ({ value }: any) => (
-                value > 0 ? <ObjectStatus state="Negative">{value}</ObjectStatus> : <Text>0</Text>
-              )},
-              { Header: "Tenure (yr)", accessor: "avg_tenure_years", width: 90, hAlign: "End" },
-              { Header: "Trend (12m)", accessor: "headcount_trend_12m", width: 100, Cell: ({ value }: any) => (
-                <Sparkline data={value} color={value[11] > value[0] ? "#2e7d32" : "#b71c1c"} />
-              )},
-            ] as any[]}
-            data={insights.departments}
-            visibleRows={5}
-            sortable filterable scaleWidthMode="Grow"
-            style={{ marginBottom: "0.5rem" }}
-          />
-        </Card>
-      )}
-
-      {/* Executive: restructure signals */}
-      {isExec && insights && (
-        <Card header={<CardHeader titleText="Restructure Signals" subtitleText="Departments that may need structural intervention" />}>
-          <div style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-            {insights.departments
-              .filter(d => d.health_score < 65 || d.attrition_rate > 0.13 || d.critical_roles_unfilled >= 2)
-              .map(d => (
-                <FlexBox key={d.department} alignItems="Center" style={{ gap: "0.75rem", padding: "0.5rem", background: "#FFF8E1", borderRadius: "6px" }}>
-                  <Icon name="alert" style={{ color: "#F57C00" }} />
-                  <div>
-                    <Text style={{ fontWeight: 600 }}>{d.department}</Text>
-                    <Text style={{ fontSize: "0.8rem", color: "#555", display: "block" }}>
-                      {d.health_score < 65 && `Health ${d.health_score}/100. `}
-                      {d.attrition_rate > 0.13 && `Attrition ${(d.attrition_rate * 100).toFixed(1)}%. `}
-                      {d.critical_roles_unfilled >= 2 && `${d.critical_roles_unfilled} critical roles unfilled. `}
-                      Span of control: {d.span_of_control}:1.
-                    </Text>
-                  </div>
-                  <Tag colorScheme="2" icon={<Icon name="task" />} style={{ marginLeft: "auto" }}>Review</Tag>
-                </FlexBox>
-              ))}
-            {insights.departments.filter(d => d.health_score < 65 || d.attrition_rate > 0.13 || d.critical_roles_unfilled >= 2).length === 0 && (
-              <FlexBox alignItems="Center" style={{ gap: "0.5rem" }}>
-                <Icon name="positive" style={{ color: "#2e7d32" }} />
-                <Text>All departments within healthy thresholds.</Text>
-              </FlexBox>
-            )}
-          </div>
-        </Card>
-      )}
-
-      {/* Org chart */}
-      <Card header={<CardHeader titleText="Organizational Structure" subtitleText="Click a card header to expand or collapse its reports" />}>
+      {/* ── Org chart (top 2 levels default) ─────────────────────────────── */}
+      <Card
+        header={<CardHeader titleText="Organizational Structure" subtitleText={isExec ? `Alex Morgan → 3 departments → ${allEmployees.filter(e => e.department !== 'Executive').length} employees. Click any VP to expand.` : "Click a card header to expand or collapse its reports."} avatar={<Icon name="org-chart" />} />}
+        style={{ borderRadius: "10px", border: "1px solid #e4e8ed" }}
+      >
         <div style={{ padding: "0.75rem 0.5rem 0.5rem" }}>
           <GradeLegend />
         </div>
         <div style={{ padding: "1rem 2rem 2rem", overflowX: "auto" }}>
-          <OrgNode node={tree} depth={0} />
+          <OrgNode node={isExec && execTree ? execTree : tree} depth={0} />
         </div>
       </Card>
     </div>

@@ -33,27 +33,42 @@ import { WorkforceAnalytics } from "./WorkforceAnalytics";
 import { TalentHealth } from "./TalentHealth";
 import { StrategicDashboard } from "./StrategicDashboard";
 import { BoardReport } from "./BoardReport";
+import { ExecutiveReport } from "./ExecutiveReport";
+import { UpSkillingCenter } from "./UpSkillingCenter";
+import { AutomationCenter } from "./AutomationCenter";
+import { WorkforceCentresExecutive } from "./WorkforceCentresExecutive";
+import { ExecHiringCenter }    from "./ExecHiringCenter";
+import { ExecUpSkillingCenter } from "./ExecUpSkillingCenter";
+import { ExecReSkillingCenter } from "./ExecReSkillingCenter";
+import { ExecAutomationCenter } from "./ExecAutomationCenter";
 
 const NAV_ITEMS = [
-  { key: "home", text: "Home", icon: "home" },
-  { key: "my-team", text: "My Team", icon: "group" },
-  { key: "agent", text: "Workforce Agent", icon: "ai" },
-  { key: "hiring", text: "Hiring Pipeline", icon: "add-employee" },
-  { key: "reskilling", text: "Reskilling Center", icon: "education" },
-  { key: "redeployment", text: "Redeployment Hub", icon: "switch-views" },
-  { key: "approvals", text: "Approvals", icon: "task" },
-  { key: "org", text: "Org Design", icon: "org-chart" },
-  { key: "scenarios", text: "Scenarios", icon: "compare" },
-  { key: "strategic", text: "Strategic", icon: "activities" },
-  { key: "talent", text: "Talent Health", icon: "employee" },
-  { key: "board-report", text: "Board Report", icon: "document-text" },
-  { key: "analytics", text: "Analytics", icon: "bar-chart" },
+  { key: "home",          text: "Home",              icon: "home" },
+  { key: "my-team",       text: "My Team",           icon: "group" },
+  { key: "agent",         text: "Workforce Agent",   icon: "ai" },
+  { key: "hiring",        text: "Hiring Center",     icon: "add-employee" },
+  { key: "upskilling",    text: "UpSkilling Center", icon: "education" },
+  { key: "reskilling",    text: "ReSkilling Center", icon: "switch-views" },
+  { key: "automation",    text: "Automation Center", icon: "ai" },
+  { key: "redeployment",  text: "Redeployment Hub",  icon: "switch-views" },
+  { key: "approvals",     text: "Approvals",         icon: "task" },
+  { key: "org",           text: "Org Structure",        icon: "org-chart" },
+  { key: "scenarios",     text: "Scenarios",         icon: "compare" },
+  { key: "strategic",     text: "Strategic",         icon: "activities" },
+  { key: "talent",        text: "Workforce Health",     icon: "employee" },
+  { key: "board-report",  text: "Board Report",      icon: "document-text" },
+  { key: "analytics",     text: "Analytics",         icon: "bar-chart" },
+  { key: "executive-report",    text: "Executive Report",      icon: "bar-chart" },
+  { key: "exec-hiring",         text: "Hiring Center",         icon: "add-employee" },
+  { key: "exec-upskilling",     text: "UpSkilling Center",     icon: "education" },
+  { key: "exec-reskilling",     text: "ReSkilling Center",     icon: "switch-views" },
+  { key: "exec-automation",     text: "Automation Center",     icon: "ai" },
 ];
 
 const ROLE_NAV: Record<string, string[]> = {
   employee:  ["home", "agent", "reskilling", "redeployment"],
-  manager:   ["home", "my-team", "agent", "hiring", "reskilling", "redeployment", "approvals", "org", "analytics"],
-  executive: ["home", "agent", "strategic", "talent", "org", "analytics", "board-report"],
+  manager:   ["home", "agent", "hiring", "upskilling", "reskilling", "automation", "org"],
+  executive: ["home", "agent", "talent", "executive-report", "exec-hiring", "exec-upskilling", "exec-reskilling", "exec-automation", "org"],
 };
 
 const ROLE_BADGE: Record<string, { bg: string; color: string }> = {
@@ -66,7 +81,7 @@ export function AppShell() {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("home");
   const allowedTabs = ROLE_NAV[user?.role || "employee"] || ROLE_NAV.employee;
-  const visibleNav = NAV_ITEMS.filter((n) => allowedTabs.includes(n.key));
+  const visibleNav = allowedTabs.map(key => NAV_ITEMS.find(n => n.key === key)!).filter(Boolean);
 
   const handleNavChange = (e: any) => {
     const item = e.detail?.item;
@@ -79,8 +94,10 @@ export function AppShell() {
       case "home": return <HomeDashboard />;
       case "my-team": return <MyTeam />;
       case "agent": return <Dashboard />;
-      case "hiring": return <HiringPipeline />;
-      case "reskilling": return <ReskillingCenter />;
+      case "hiring":      return <HiringPipeline />;
+      case "upskilling":  return <UpSkillingCenter />;
+      case "reskilling":  return <ReskillingCenter />;
+      case "automation":  return <AutomationCenter />;
       case "redeployment": return <RedeploymentHub />;
       case "approvals": return <Approvals />;
       case "org": return <OrgDesign />;
@@ -88,6 +105,12 @@ export function AppShell() {
       case "talent": return <TalentHealth />;
       case "board-report": return <BoardReport />;
       case "analytics": return <WorkforceAnalytics />;
+      case "executive-report":  return <ExecutiveReport />;
+      case "exec-hiring":       return <ExecHiringCenter />;
+      case "exec-upskilling":   return <ExecUpSkillingCenter />;
+      case "exec-reskilling":   return <ExecReSkillingCenter />;
+      case "exec-automation":   return <ExecAutomationCenter />;
+      case "workforce-centres": return <WorkforceCentresExecutive />;
       default: return <HomeDashboard />;
     }
   };

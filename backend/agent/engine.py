@@ -153,6 +153,46 @@ def parse_strategy(scenario_text: str, scenario_type: str = "general") -> Strate
         target.parsed_confidence = 0.95
         return target
 
+    # ── Joule-powered executive scenarios ─────────────────────────────────
+    if scenario_type == "attrition_risk":
+        # Focus on retaining critical/high-priority talent; no forced reductions
+        target.roles_to_grow = [r["role"] for r in future_roles if r["priority"] in ("critical", "high")]
+        target.roles_to_reduce = []
+        target.skill_targets = ["Leadership", "Communication", "Data Analysis", "Cloud Architecture", "Machine Learning"]
+        target.timeline_years = 1
+        target.parsed_confidence = 0.90
+        return target
+
+    if scenario_type == "skills_gap":
+        # Identify all high-priority roles with skill shortfalls; drive build+buy actions
+        target.roles_to_grow = [r["role"] for r in future_roles if r["priority"] in ("critical", "high")]
+        target.roles_to_reduce = []
+        target.skill_targets = [
+            "Machine Learning", "Deep Learning", "Python", "Cloud Architecture",
+            "Kubernetes", "Data Pipelines", "Cybersecurity", "DevOps", "SQL",
+        ]
+        target.timeline_years = 2
+        target.parsed_confidence = 0.92
+        return target
+
+    if scenario_type == "succession_planning":
+        # Surface bench depth gaps for Tier-1/Tier-2 roles; recommend BUILD or BUY
+        target.roles_to_grow = [r["role"] for r in future_roles if r["priority"] == "critical"]
+        target.roles_to_reduce = []
+        target.skill_targets = ["Leadership", "Strategic Planning", "Data Analysis", "Communication"]
+        target.timeline_years = 1
+        target.parsed_confidence = 0.88
+        return target
+
+    if scenario_type == "cost_forecast":
+        # Model three cost paths: status-quo, reduce-15%, invest-in-AI
+        target.roles_to_grow = ["ML Engineer", "Data Engineer", "AI Product Manager"]
+        target.roles_to_reduce = [r["role"] for r in future_roles if r["priority"] == "reduce"]
+        target.skill_targets = ["Machine Learning", "Python", "Cloud Architecture", "Data Pipelines", "Power BI"]
+        target.timeline_years = 2
+        target.parsed_confidence = 0.91
+        return target
+
     # ── Fallback: free-text parsing for manually typed scenarios ──
     growth_keywords = {"grow", "double", "triple", "increase", "expand", "hire", "scale", "build", "invest"}
     reduce_keywords = {"reduce", "cut", "shrink", "eliminate", "automate", "consolidate", "downsize"}

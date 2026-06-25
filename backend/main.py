@@ -82,6 +82,19 @@ def analyze_scenario(req: ScenarioRequest):
     }
 
 
+# ── Joule LLM Chat ──────────────────────────────────────────────────────────
+from agent.joule_llm import chat_with_joule
+
+class JouleChatRequest(BaseModel):
+    message: str
+    history: list[dict] | None = None
+
+@app.post("/api/joule/chat")
+def joule_chat(req: JouleChatRequest):
+    result = chat_with_joule(req.message, req.history)
+    return result
+
+
 @app.get("/api/employees")
 def get_employees():
     return load_employees()

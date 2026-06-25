@@ -7,6 +7,9 @@ __pycache__/
 dist/
 build/
 *.env
+.env
+.env.*
+backend/.env
 
 # Node
 frontend/node_modules/
@@ -25,3 +28,12 @@ frontend/build/
 *.key
 *.pem
 *.p12
+*service-key*.json
+*credentials*.json
+vcap_services.json
+
+# Internal planning notes
+.opencode/
+BUILD_PLAN_AI_CORE.md
+WPA-Readme.docx
+Workforce_Agent_Scenarios.docx
