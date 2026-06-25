@@ -1,34 +1,35 @@
 """
 Authentication module — mock login with simple token and role-based access.
-Credentials: employee/emp123, manager/man123, executive/exe123
+Credentials loaded from environment variables (see .env.example).
 """
 import hashlib
 import json
 import time
 import base64
+import os
 from typing import Optional
 from fastapi import HTTPException, Request
 
 TOKEN_EXPIRY_HOURS = 8
-SECRET = "wfp-agent-2026"
+SECRET = os.getenv("TOKEN_SECRET", "wfp-agent-2026")
 
 USERS = {
     "employee": {
-        "password": "emp123",
+        "password": os.getenv("EMPLOYEE_PASSWORD", "emp123"),
         "role": "employee",
         "name": "Richard Harris",
         "department": "Finance",
         "employee_id": "EMP01025",
     },
     "manager": {
-        "password": "man123",
+        "password": os.getenv("MANAGER_PASSWORD", "man123"),
         "role": "manager",
         "name": "Richard Chen",
         "department": "Technology",
         "employee_id": "EMP01020",
     },
     "executive": {
-        "password": "exe123",
+        "password": os.getenv("EXECUTIVE_PASSWORD", "exe123"),
         "role": "executive",
         "name": "Alex Morgan",
         "title": "Chief Executive Officer",

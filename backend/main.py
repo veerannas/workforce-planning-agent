@@ -2,6 +2,9 @@
 FastAPI backend for Workforce Planning Agent.
 Serves API + static React build (single CF app deployment).
 """
+import os
+from dotenv import load_dotenv
+load_dotenv()  # loads backend/.env in local dev; CF uses environment variables directly
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
