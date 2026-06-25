@@ -110,7 +110,7 @@ export function ExecutiveReport() {
 
   const roiData = [
     { name: "BUILD (Reskilling)", roi: reskillingRoi, cost: Math.round(investment.cost_by_department.Technology / 1000) },
-    { name: "REDEPLOY", roi: 68, cost: 30 },
+    { name: "RESKILL", roi: 68, cost: 30 },
     { name: "Offer Acceptance", roi: Math.round(offerAcceptance * 100), cost: 8 },
   ];
 

@@ -80,7 +80,7 @@
         <mxCell id="tool3" value="[3] GAP ANALYZER&#xa;Deterministic&#xa;Current vs. Future matrix" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D6EAF8;strokeColor=#1A5276;fontSize=9;" vertex="1" parent="be-container">
           <mxGeometry x="380" y="220" width="160" height="70" as="geometry"/>
         </mxCell>
-        <mxCell id="tool4" value="[4] EMPLOYEE ASSESSOR&#xa;LLM Tool&#xa;Reskill fit · mobility · risk" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDEBD0;strokeColor=#D35400;fontSize=9;" vertex="1" parent="be-container">
+        <mxCell id="tool4" value="[4] EMPLOYEE ASSESSOR&#xa;LLM Tool&#xa;ReSkill fit · mobility · risk" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDEBD0;strokeColor=#D35400;fontSize=9;" vertex="1" parent="be-container">
           <mxGeometry x="560" y="220" width="160" height="70" as="geometry"/>
         </mxCell>
         <mxCell id="tool5" value="[5] ACTION RECOMMENDER&#xa;Rules + LLM&#xa;BBRA · cost · confidence" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDEBD0;strokeColor=#D35400;fontSize=9;" vertex="1" parent="be-container">
@@ -92,7 +92,7 @@
         <mxCell id="tool-guard" value="Hallucination Guard&#xa;Confidence scoring &lt;0.6&#xa;→ NEEDS_HR_REVIEW flag" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDEDEC;strokeColor=#C0392B;fontSize=9;" vertex="1" parent="be-container">
           <mxGeometry x="200" y="330" width="160" height="70" as="geometry"/>
         </mxCell>
-        <mxCell id="tool-hc" value="Headcount Math&#xa;future = current + hire&#xa;− separate ± redeploy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D6EAF8;strokeColor=#1A5276;fontSize=9;" vertex="1" parent="be-container">
+        <mxCell id="tool-hc" value="Headcount Math&#xa;future = current + hire&#xa;− separate ± reskill" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D6EAF8;strokeColor=#1A5276;fontSize=9;" vertex="1" parent="be-container">
           <mxGeometry x="380" y="330" width="160" height="70" as="geometry"/>
         </mxCell>
 

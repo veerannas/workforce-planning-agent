@@ -92,10 +92,10 @@ interface KpiData {
 }
 
 const ACTION_ICONS: Record<string, string> = {
-  BUILD: "education", BUY: "add-employee", REDEPLOY: "switch-views", AUTOMATE: "ai", REVIEW: "task",
+  UPSKILL: "education", HIRE: "add-employee", RESKILL: "switch-views", AUTOMATE: "ai", REVIEW: "task",
 };
 const ACTION_COLORS: Record<string, string> = {
-  BUILD: "#198754", BUY: "#0F62FE", REDEPLOY: "#6E32C9", AUTOMATE: "#D26900", REVIEW: "#DA1E28",
+  UPSKILL: "#198754", HIRE: "#0F62FE", RESKILL: "#6E32C9", AUTOMATE: "#D26900", REVIEW: "#DA1E28",
 };
 
 export function Dashboard() {

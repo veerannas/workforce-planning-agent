@@ -7,9 +7,9 @@ import "@ui5/webcomponents-icons/dist/ai.js";
 import "@ui5/webcomponents-icons/dist/task.js";
 
 const ACTION_ICONS: Record<string, string> = {
-  BUILD:    "education",
-  BUY:      "add-employee",
-  REDEPLOY: "switch-views",
+  UPSKILL:    "education",
+  HIRE:      "add-employee",
+  RESKILL: "switch-views",
   AUTOMATE: "ai",
   REVIEW:   "task",
 };

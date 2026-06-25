@@ -9,9 +9,9 @@ export function InvestmentCalc() {
   if (!data) return <Text>Loading investment data...</Text>;
 
   const actionColors: Record<string, { bg: string; color: string }> = {
-    BUILD: { bg: "#e8f5e9", color: "#2e7d32" },
-    BUY: { bg: "#e3f2fd", color: "#1565c0" },
-    REDEPLOY: { bg: "#f3e5f5", color: "#6a1b9a" },
+    UPSKILL: { bg: "#e8f5e9", color: "#2e7d32" },
+    HIRE: { bg: "#e3f2fd", color: "#1565c0" },
+    RESKILL: { bg: "#f3e5f5", color: "#6a1b9a" },
     AUTOMATE: { bg: "#fff3e0", color: "#e65100" },
     REVIEW: { bg: "#fce4ec", color: "#c62828" },
   };

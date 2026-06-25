@@ -15,7 +15,7 @@ import "@ui5/webcomponents-icons/dist/accept.js";
 const API = import.meta.env.DEV ? "http://localhost:8000" : "";
 const DEPTS = ["Technology", "Operations", "Finance"];
 const DEPT_COLORS: Record<string, string> = { Technology: "#0F62FE", Operations: "#198754", Finance: "#6E32C9" };
-const ACTION_COLORS: Record<string, string> = { AUTOMATE: "#6E32C9", BUILD: "#198754", REDEPLOY: "#0F62FE", BUY: "#D26900", REVIEW: "#DA1E28" };
+const ACTION_COLORS: Record<string, string> = { AUTOMATE: "#6E32C9", UPSKILL: "#198754", RESKILL: "#0F62FE", HIRE: "#D26900", REVIEW: "#DA1E28" };
 
 export function ExecAutomationCenter() {
   const [recs, setRecs]         = useState<any[]>([]);
@@ -46,7 +46,7 @@ export function ExecAutomationCenter() {
   if (!insights || recs.length === 0) return <Text>Loading Automation Center...</Text>;
 
   const autoRecs    = recs.filter(r => r.action === "AUTOMATE");
-  const redeployRecs = recs.filter(r => r.action === "REDEPLOY");
+  const redeployRecs = recs.filter(r => r.action === "RESKILL");
 
   const byDept = DEPTS.map(dept => {
     const autoRows = autoRecs.filter(r => r.department === dept);

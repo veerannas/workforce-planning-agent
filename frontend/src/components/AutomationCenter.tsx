@@ -18,8 +18,8 @@ import "@ui5/webcomponents-icons/dist/employee.js";
 const API = import.meta.env.DEV ? "http://localhost:8000" : "";
 
 const ACTION_COLORS: Record<string, string> = {
-  AUTOMATE: "#6E32C9", BUILD: "#198754", REDEPLOY: "#0F62FE",
-  BUY: "#D26900", REVIEW: "#DA1E28",
+  AUTOMATE: "#6E32C9", UPSKILL: "#198754", RESKILL: "#0F62FE",
+  HIRE: "#D26900", REVIEW: "#DA1E28",
 };
 
 export function AutomationCenter() {

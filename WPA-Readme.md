@@ -16,13 +16,13 @@ I frame this as a **Workforce Action Decision Engine**: a single-scenario agent 
 
 | Action | Meaning | When |
 |--------|---------|------|
-| **Build** | Reskill existing employees | Strategic skill, time available, adjacent capability exists |
-| **Buy** | Hire externally | Skill scarce internally, time-critical |
-| **Redeploy** | Move talent internally | Skill already exists elsewhere in org |
+| **UpSkill** | ReSkill existing employees | Strategic skill, time available, adjacent capability exists |
+| **Hire** | Hire externally | Skill scarce internally, time-critical |
+| **ReSkill** | Move talent internally | Skill already exists elsewhere in org |
 | **Automate** | Replace with AI/tooling | High-repetition, low-judgment task work |
 
 **Why this problem, not another?**
-Reskilling costs 20–30% of a new hire. Redeployment is nearly free when the data exists. Yet 92% of organizations still use manual skills mapping and default to external hiring. A focused decision engine that recommends Build vs. Buy vs. Redeploy vs. Automate — with cost estimates and confidence scores — delivers immediate, measurable business value.
+ReSkilling costs 20–30% of a new hire. ReSkillment is nearly free when the data exists. Yet 92% of organizations still use manual skills mapping and default to external hiring. A focused decision engine that recommends UpSkill vs. Hire vs. ReSkill vs. Automate — with cost estimates and confidence scores — delivers immediate, measurable business value.
 
 ---
 
@@ -69,7 +69,7 @@ This is the most important architectural decision. The rule is simple:
 | Deterministic (Trust with Math) | AI Reasoning (Trust with Nuance) |
 |---|---|
 | Skill gap count: `future_need − current_inventory` | Parse free-text strategic scenario into structured targets |
-| Headcount balancing: `future = current + hire − separate ± redeploy` | Assess reskilling potential from employee profile signals |
+| Headcount balancing: `future = current + hire − separate ± reskill` | Assess reskilling potential from employee profile signals |
 | Cost estimation: salary bands × reskill cost table | Explain *why* a specific action is recommended |
 | BBRA rule gates: grade < 3 AND perf < 2 → flag for REVIEW | Flag contradictory signals (high performer in declining role) |
 | Data quality checks: null skills, stale dates, duplicate roles | Generate executive narrative and risk commentary |
@@ -104,7 +104,7 @@ Five evaluation checks run automatically after every agent execution:
 | Check | Method | Pass Condition |
 |-------|--------|----------------|
 | **Coverage** | Count employees with assigned BBRA action | 100% of employees classified (or explicitly flagged) |
-| **Headcount math** | Assert: `future_HC = current + hired − separated ± redeployed` per dept | Zero delta violations |
+| **Headcount math** | Assert: `future_HC = current + hired − separated ± reskilled` per dept | Zero delta violations |
 | **Consistency** | Run same scenario 3× with same data | Categorical actions match ≥85% across runs |
 | **Hallucination guard** | Verify all employee names/IDs in output exist in source dataset | 0 phantom references |
 | **Cost sanity** | Total plan cost vs. configurable annual HR budget threshold | Cost < 2× annual HR budget (default) |

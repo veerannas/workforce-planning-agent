@@ -46,7 +46,7 @@
         <mxCell id="fe-api" value="&lt;b&gt;api.ts&lt;/b&gt;&lt;br&gt;Axios client&lt;br&gt;POST /api/analyze" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="zone-fe">
           <mxGeometry x="740" y="38" width="185" height="68" as="geometry"/>
         </mxCell>
-        <mxCell id="fe-vite" value="&lt;b&gt;Vite build&lt;/b&gt;&lt;br&gt;dist/ → FastAPI&lt;br&gt;static mount" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="zone-fe">
+        <mxCell id="fe-vite" value="&lt;b&gt;Vite upskill&lt;/b&gt;&lt;br&gt;dist/ → FastAPI&lt;br&gt;static mount" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="zone-fe">
           <mxGeometry x="970" y="38" width="185" height="68" as="geometry"/>
         </mxCell>
 
@@ -83,7 +83,7 @@
         <mxCell id="eng-guard" value="&lt;b&gt;Hallucination Guard&lt;/b&gt;&lt;br&gt;Source citation check&lt;br&gt;Confidence score&lt;br&gt;Fallback trigger" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="zone-eng">
           <mxGeometry x="740" y="40" width="185" height="84" as="geometry"/>
         </mxCell>
-        <mxCell id="eng-prompt" value="&lt;b&gt;Prompt Builder&lt;/b&gt;&lt;br&gt;System prompt&lt;br&gt;Role context inject&lt;br&gt;In-memory LRU cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="zone-eng">
+        <mxCell id="eng-prompt" value="&lt;b&gt;Prompt UpSkiller&lt;/b&gt;&lt;br&gt;System prompt&lt;br&gt;Role context inject&lt;br&gt;In-memory LRU cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="zone-eng">
           <mxGeometry x="970" y="40" width="185" height="84" as="geometry"/>
         </mxCell>
 
@@ -128,7 +128,7 @@
         <mxCell id="zone-dep" value="⑦ Deployment — SAP BTP Cloud Foundry · us10-001" style="swimlane;startSize=28;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;fontColor=#333333;" vertex="1" parent="1">
           <mxGeometry x="60" y="1170" width="1280" height="150" as="geometry"/>
         </mxCell>
-        <mxCell id="dep-manifest" value="&lt;b&gt;manifest.yml&lt;/b&gt;&lt;br&gt;memory: 256M&lt;br&gt;instances: 1&lt;br&gt;buildpack: python" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="zone-dep">
+        <mxCell id="dep-manifest" value="&lt;b&gt;manifest.yml&lt;/b&gt;&lt;br&gt;memory: 256M&lt;br&gt;instances: 1&lt;br&gt;upskillpack: python" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="zone-dep">
           <mxGeometry x="50" y="38" width="185" height="84" as="geometry"/>
         </mxCell>
         <mxCell id="dep-btp" value="&lt;b&gt;BTP CF Runtime&lt;/b&gt;&lt;br&gt;Region: us10-001&lt;br&gt;Org: trial · Space: dev&lt;br&gt;Route: cfapps.us10-001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="zone-dep">

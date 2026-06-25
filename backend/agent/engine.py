@@ -482,7 +482,7 @@ def recommend_actions(strategy: StrategyTarget, assessments: list[EmployeeAssess
             rec = Recommendation(
                 employee_id=a.employee_id, employee_name=a.employee_name,
                 department=a.department, current_role=a.current_role,
-                action="REDEPLOY", target_role=a.target_role,
+                action="RESKILL", target_role=a.target_role,
                 confidence=round(0.6 + a.redeploy_fit * 0.3, 2),
                 cost_estimate_usd=5000,  # internal transfer cost
                 rationale=f"Strong skill match ({a.redeploy_fit:.0%}) for {a.target_role}. "
@@ -505,7 +505,7 @@ def recommend_actions(strategy: StrategyTarget, assessments: list[EmployeeAssess
             rec = Recommendation(
                 employee_id=a.employee_id, employee_name=a.employee_name,
                 department=a.department, current_role=a.current_role,
-                action="BUILD", target_role=a.target_role,
+                action="UPSKILL", target_role=a.target_role,
                 confidence=round(0.5 + a.reskill_fit * 0.4, 2),
                 cost_estimate_usd=max(reskill_cost, 8000),
                 rationale=f"Adjacent skills ({a.reskill_fit:.0%} fit). Missing: {', '.join(a.missing_skills[:3])}. "
@@ -537,7 +537,7 @@ def recommend_actions(strategy: StrategyTarget, assessments: list[EmployeeAssess
                 rec = Recommendation(
                     employee_id=a.employee_id, employee_name=a.employee_name,
                     department=a.department, current_role=a.current_role,
-                    action="BUILD", target_role=a.target_role,
+                    action="UPSKILL", target_role=a.target_role,
                     confidence=round(0.4 + a.reskill_fit * 0.4, 2),
                     cost_estimate_usd=max(reskill_cost, 8000),
                     rationale=f"Role declining but employee shows reskill potential ({a.reskill_fit:.0%}). "
@@ -551,7 +551,7 @@ def recommend_actions(strategy: StrategyTarget, assessments: list[EmployeeAssess
         rec = Recommendation(
             employee_id=a.employee_id, employee_name=a.employee_name,
             department=a.department, current_role=a.current_role,
-            action="BUILD", target_role=a.target_role,
+            action="UPSKILL", target_role=a.target_role,
             confidence=round(0.4 + a.reskill_fit * 0.3, 2),
             cost_estimate_usd=6000,
             rationale=f"Moderate fit. Recommend gradual upskilling in target areas. "
@@ -600,7 +600,7 @@ def synthesize_plan(scenario: str, strategy: StrategyTarget, recommendations: li
     headcount_changes = {}
     for dept in ["Technology", "Operations", "Finance"]:
         dept_recs = [r for r in recommendations if r.department == dept]
-        redeployed_in = sum(1 for r in dept_recs if r.action == "REDEPLOY")
+        redeployed_in = sum(1 for r in dept_recs if r.action == "RESKILL")
         automated_out = sum(1 for r in dept_recs if r.action == "AUTOMATE")
         headcount_changes[dept] = {
             "current": len(dept_recs),
@@ -634,8 +634,8 @@ def synthesize_plan(scenario: str, strategy: StrategyTarget, recommendations: li
         flagged_for_review=flagged,
         headcount_changes=headcount_changes,
         top_risks=risks,
-        timeline_summary=f"Phase 1 (0-6 mo): Redeploy {actions_breakdown.get('REDEPLOY', 0)} employees. "
-                        f"Phase 2 (6-18 mo): Reskill {actions_breakdown.get('BUILD', 0)} employees. "
+        timeline_summary=f"Phase 1 (0-6 mo): ReSkill {actions_breakdown.get('RESKILL', 0)} employees. "
+                        f"Phase 2 (6-18 mo): UpSkill {actions_breakdown.get('UPSKILL', 0)} employees. "
                         f"Phase 3 (12-36 mo): Automate {actions_breakdown.get('AUTOMATE', 0)} roles.",
         confidence_avg=round(sum(confidences) / len(confidences), 2) if confidences else 0.0
     )

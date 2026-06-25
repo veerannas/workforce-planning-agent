@@ -46,7 +46,7 @@
         <mxCell id="tab2" parent="tab_bg" style="swimlane;startSize=24;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;fontColor=#1a376c;rounded=1;html=1;" value="&lt;b&gt;Tab 2: Scenario Comparison&lt;/b&gt;" vertex="1">
           <mxGeometry height="105" width="520" x="20" y="295" as="geometry" />
         </mxCell>
-        <mxCell id="c1" parent="tab2" style="rounded=1;fillColor=#fff;strokeColor=#D6B656;fontSize=9;html=1;" value="C1: AI Growth + Reskilling" vertex="1">
+        <mxCell id="c1" parent="tab2" style="rounded=1;fillColor=#fff;strokeColor=#D6B656;fontSize=9;html=1;" value="C1: AI Growth + ReSkilling" vertex="1">
           <mxGeometry height="26" width="160" x="10" y="32" as="geometry" />
         </mxCell>
         <mxCell id="c2" parent="tab2" style="rounded=1;fillColor=#fff;strokeColor=#D6B656;fontSize=9;html=1;" value="C2: Aggressive Cost Reduction" vertex="1">
