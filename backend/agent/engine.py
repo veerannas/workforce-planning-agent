@@ -442,6 +442,7 @@ class Recommendation:
     rationale: str
     flags: list[str] = field(default_factory=list)
     timeline_months: int = 0
+    transformation_year: int = 1  # 1=Stabilise, 2=Grow, 3=Scale
 
 
 def recommend_actions(strategy: StrategyTarget, assessments: list[EmployeeAssessment]) -> list[Recommendation]:
@@ -518,6 +519,8 @@ def recommend_actions(strategy: StrategyTarget, assessments: list[EmployeeAssess
         # Rule 3: Role is targeted for reduction + low fit → candidate for separation/automation
         if a.current_role in strategy.roles_to_reduce:
             if a.reskill_fit < 0.4 and a.redeploy_fit < 0.4:
+                # Determine automation complexity: simple ops roles = quick, complex = longer
+                is_complex = a.current_role in ("Procurement Specialist", "Accounts Payable Clerk")
                 rec = Recommendation(
                     employee_id=a.employee_id, employee_name=a.employee_name,
                     department=a.department, current_role=a.current_role,
@@ -526,8 +529,8 @@ def recommend_actions(strategy: StrategyTarget, assessments: list[EmployeeAssess
                     cost_estimate_usd=0,  # no direct employee cost — role elimination
                     rationale=f"Role '{a.current_role}' targeted for reduction. "
                              f"Low reskill ({a.reskill_fit:.0%}) and redeploy ({a.redeploy_fit:.0%}) fit. "
-                             f"Consider role automation or managed transition.",
-                    flags=a.flags, timeline_months=6
+                             f"{'Complex automation — phased over 24 months.' if is_complex else 'Simple automation — immediate replacement.'}",
+                    flags=a.flags, timeline_months=24 if is_complex else 6
                 )
                 recommendations.append(rec)
                 continue
@@ -542,23 +545,99 @@ def recommend_actions(strategy: StrategyTarget, assessments: list[EmployeeAssess
                     cost_estimate_usd=max(reskill_cost, 8000),
                     rationale=f"Role declining but employee shows reskill potential ({a.reskill_fit:.0%}). "
                              f"Recommend transition to {a.target_role or 'growth role'}.",
-                    flags=a.flags, timeline_months=6
+                    flags=a.flags, timeline_months=12
                 )
                 recommendations.append(rec)
                 continue
 
-        # Rule 4: Default — no strong signal → maintain or low-priority build
+        # Rule 4: Very low fit across all dimensions → external HIRE candidate slot
+        if a.reskill_fit < 0.35 and a.redeploy_fit < 0.3 and a.target_role:
+            rec = Recommendation(
+                employee_id=a.employee_id, employee_name=a.employee_name,
+                department=a.department, current_role=a.current_role,
+                action="HIRE", target_role=a.target_role,
+                confidence=round(0.3 + a.reskill_fit * 0.3, 2),
+                cost_estimate_usd=45000,  # avg external hire cost (recruiting + onboarding)
+                rationale=f"Internal gap too large for {a.target_role} "
+                         f"(reskill: {a.reskill_fit:.0%}, redeploy: {a.redeploy_fit:.0%}). "
+                         f"Recommend external hiring to fill critical gap.",
+                flags=a.flags, timeline_months=18
+            )
+            recommendations.append(rec)
+            continue
+
+        # Rule 5: Default — no strong signal → gradual upskilling (long-term)
+        # Split by confidence: high-confidence short programme, low-confidence long programme
+        fit_score = a.reskill_fit
+        if fit_score >= 0.45:
+            timeline = 9
+        else:
+            timeline = 18  # longer programme for weaker fit → will land in Y2/Y3
         rec = Recommendation(
             employee_id=a.employee_id, employee_name=a.employee_name,
             department=a.department, current_role=a.current_role,
             action="UPSKILL", target_role=a.target_role,
             confidence=round(0.4 + a.reskill_fit * 0.3, 2),
-            cost_estimate_usd=6000,
-            rationale=f"Moderate fit. Recommend gradual upskilling in target areas. "
+            cost_estimate_usd=6000 if timeline <= 9 else 14000,
+            rationale=f"{'Moderate fit' if fit_score >= 0.45 else 'Developing fit'}. "
+                     f"Recommend {'standard' if timeline <= 9 else 'extended'} upskilling programme. "
                      f"Current skills: {', '.join(a.matching_skills[:3]) or 'none matched'}.",
-            flags=a.flags, timeline_months=9
+            flags=a.flags, timeline_months=timeline
         )
         recommendations.append(rec)
+
+    return recommendations
+
+
+def assign_transformation_years(recommendations: list[Recommendation]) -> list[Recommendation]:
+    """Assign transformation_year (1/2/3) per employee for org_transformation scenarios.
+
+    Phase logic:
+      Year 1 (Stabilise, 0-12mo):  RESKILL (fast internal moves) + quick AUTOMATE + REVIEW
+      Year 2 (Grow,      13-24mo): Standard UPSKILL programmes + HIRE for critical gaps
+      Year 3 (Scale,     25-36mo): Long UPSKILL graduates + complex AUTOMATE + strategic HIRE
+
+    Distribution target: ~30% Y1, ~40% Y2, ~30% Y3
+    """
+    for rec in recommendations:
+        m = rec.timeline_months
+        action = rec.action
+        conf = rec.confidence
+
+        if action == "REVIEW":
+            rec.transformation_year = 1
+
+        elif action == "RESKILL":
+            # Fast internal transfers always Y1
+            rec.transformation_year = 1
+
+        elif action == "AUTOMATE":
+            # Simple automation (≤6mo) → Y1, complex (>6mo) → Y3
+            if m <= 6:
+                rec.transformation_year = 1
+            else:
+                rec.transformation_year = 3
+
+        elif action == "HIRE":
+            # Critical/high-conf hires → Y2, strategic/low-conf → Y3
+            if conf >= 0.5:
+                rec.transformation_year = 2
+            else:
+                rec.transformation_year = 3
+
+        elif action == "UPSKILL":
+            # Short (≤9mo) → Y1-Y2 split by confidence
+            # Medium (10-15mo) → Y2
+            # Long (>15mo) → Y3
+            if m <= 9:
+                rec.transformation_year = 1 if conf >= 0.6 else 2
+            elif m <= 15:
+                rec.transformation_year = 2
+            else:
+                rec.transformation_year = 3
+
+        else:
+            rec.transformation_year = 2
 
     return recommendations
 
@@ -576,6 +655,8 @@ class ExecutiveSummary:
     top_risks: list[str]
     timeline_summary: str
     confidence_avg: float
+    year_breakdown: dict[str, dict] = field(default_factory=dict)   # {1: {actions, cost, count}, ...}
+    budget_reallocation: dict[str, float] = field(default_factory=dict)  # ops budget shift %
 
 
 def synthesize_plan(scenario: str, strategy: StrategyTarget, recommendations: list[Recommendation]) -> ExecutiveSummary:
@@ -624,6 +705,56 @@ def synthesize_plan(scenario: str, strategy: StrategyTarget, recommendations: li
     if not risks:
         risks.append("Plan is within normal risk parameters")
 
+    # Year breakdown for 3-year transformation view
+    year_breakdown: dict = {}
+    for yr in [1, 2, 3]:
+        yr_recs = [r for r in recommendations if r.transformation_year == yr]
+        yr_actions: dict = {}
+        yr_cost = 0
+        for r in yr_recs:
+            yr_actions[r.action] = yr_actions.get(r.action, 0) + 1
+            yr_cost += r.cost_estimate_usd
+        year_breakdown[str(yr)] = {
+            "count": len(yr_recs),
+            "actions": yr_actions,
+            "cost_usd": yr_cost,
+            "phase_label": {1: "Stabilise", 2: "Grow", 3: "Scale"}[yr],
+            "phase_period": {1: "0–12 months", 2: "13–24 months", 3: "25–36 months"}[yr],
+            "phase_focus": {
+                1: "Quick wins — fast internal moves, HR reviews, automation of repetitive roles",
+                2: "Capability build — upskilling programmes, targeted hiring for critical gaps",
+                3: "Scale AI-first — strategic hires, advanced upskilling, full automation rollout"
+            }[yr],
+        }
+
+    # Budget reallocation: 30% ops budget → technology (as stated in scenario)
+    ops_budget = org_budgets.get("Operations", 0)
+    tech_budget = org_budgets.get("Technology", 0)
+    reallocated_usd = round(ops_budget * 0.30)
+    avg_hire_cost = 45000
+    max_hires_budget = reallocated_usd // avg_hire_cost if avg_hire_cost > 0 else 0
+    actual_hires = actions_breakdown.get("HIRE", 0)
+
+    budget_reallocation = {
+        "ops_reduction_pct": 30.0,
+        "ops_budget_before": ops_budget,
+        "ops_budget_after": round(ops_budget * 0.70),
+        "tech_budget_before": tech_budget,
+        "tech_budget_after": round(tech_budget + reallocated_usd),
+        "reallocated_usd": reallocated_usd,
+        "max_hires_budget": max_hires_budget,
+        "actual_hires": actual_hires,
+        "budget_utilised_pct": round((actual_hires * avg_hire_cost / reallocated_usd * 100) if reallocated_usd > 0 else 0, 1),
+    }
+
+    # Add budget risk
+    if actual_hires > max_hires_budget:
+        risks.append(f"Hiring plan ({actual_hires} hires × ${avg_hire_cost:,} = ${actual_hires * avg_hire_cost:,}) "
+                    f"exceeds reallocated budget (${reallocated_usd:,} supports max {max_hires_budget} hires)")
+    elif actual_hires > 0:
+        risks.append(f"Hiring: {actual_hires} external hires planned within ${reallocated_usd:,} reallocation "
+                    f"({budget_reallocation['budget_utilised_pct']}% of hiring budget used)")
+
     return ExecutiveSummary(
         scenario=scenario,
         total_employees=len(recommendations),
@@ -634,10 +765,12 @@ def synthesize_plan(scenario: str, strategy: StrategyTarget, recommendations: li
         flagged_for_review=flagged,
         headcount_changes=headcount_changes,
         top_risks=risks,
-        timeline_summary=f"Phase 1 (0-6 mo): ReSkill {actions_breakdown.get('RESKILL', 0)} employees. "
-                        f"Phase 2 (6-18 mo): UpSkill {actions_breakdown.get('UPSKILL', 0)} employees. "
-                        f"Phase 3 (12-36 mo): Automate {actions_breakdown.get('AUTOMATE', 0)} roles.",
-        confidence_avg=round(sum(confidences) / len(confidences), 2) if confidences else 0.0
+        timeline_summary=f"Year 1 (Stabilise): {year_breakdown.get('1',{}).get('count',0)} employees. "
+                        f"Year 2 (Grow): {year_breakdown.get('2',{}).get('count',0)} employees. "
+                        f"Year 3 (Scale): {year_breakdown.get('3',{}).get('count',0)} employees.",
+        confidence_avg=round(sum(confidences) / len(confidences), 2) if confidences else 0.0,
+        year_breakdown=year_breakdown,
+        budget_reallocation=budget_reallocation,
     )
 
 
@@ -706,6 +839,10 @@ def run_agent(
         assessments     = [a for a in assessments     if a.employee_id in team_ids]
         gaps            = [g for g in gaps            if g.role in team_roles]
     # executive: no filter — full org
+
+    # Assign transformation years for 3-year scenarios
+    if scenario_type == "org_transformation":
+        recommendations = assign_transformation_years(recommendations)
 
     # Synthesize on scoped recommendations
     summary = synthesize_plan(scenario_text, strategy, recommendations)
